@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>07 / 08 單字互動式學習</title>
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --line:#d9e2f2;
+      --text:#1f2d3d;
+      --muted:#5c6b80;
+      --primary:#4f7cff;
+      --primary2:#6d93ff;
+      --green:#20a464;
+      --orange:#f4a340;
+      --red:#e25656;
+      --yellow:#fff29a;
+      --shadow:0 10px 24px rgba(58,84,143,.12);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+      background:linear-gradient(180deg,#edf3ff 0%, var(--bg) 100%);
+      color:var(--text);
+    }
+    .container{
+      max-width:1180px;
+      margin:0 auto;
+      padding:16px;
+    }
+    .hero{
+      background:linear-gradient(135deg,#ffffff 0%,#eef4ff 65%,#f8fbff 100%);
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:22px;
+      margin-bottom:16px;
+    }
+    h1{
+      margin:0 0 10px;
+      font-size:clamp(28px,4vw,42px);
+      line-height:1.15;
+    }
+    .subtitle{
+      color:var(--muted);
+      line-height:1.8;
+      font-size:15px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 360px 1fr;
+      gap:16px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:16px;
+    }
+    .card h2,.card h3{
+      margin:0 0 12px;
+    }
+    .btn-row,.input-row,.mode-row,.audio-row,.small-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+    button,select,input{
+      font:inherit;
+    }
+    button{
+      border:0;
+      border-radius:14px;
+      padding:11px 14px;
+      cursor:pointer;
+      font-weight:700;
+      transition:.15s ease;
+    }
+    button:hover{transform:translateY(-1px);opacity:.96}
+    button:active{transform:translateY(0)}
+    .primary{background:var(--primary);color:#fff}
+    .secondary{background:#eef3ff;color:#3457c8}
+    .green{background:var(--green);color:#fff}
+    .orange{background:var(--orange);color:#fff}
+    .red{background:var(--red);color:#fff}
+    .ghost{background:#f8faff;color:var(--text);border:1px solid var(--line)}
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#f7f9fe;
+      border:1px solid var(--line);
+      color:var(--muted);
+      font-size:14px;
+      margin:0 8px 8px 0;
+    }
+    select,input[type="text"]{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:11px 12px;
+      background:#fff;
+      color:var(--text);
+    }
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .muted{color:var(--muted)}
+    .list{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+      gap:12px;
+    }
+    .vocab-item{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+      min-height:120px;
+      position:relative;
+      overflow:hidden;
+    }
+    .vocab-item.mastered{
+      outline:2px solid rgba(32,164,100,.24);
+      background:linear-gradient(180deg,#ffffff,#f4fff8);
+    }
+    .num{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:30px;
+      height:30px;
+      border-radius:999px;
+      background:#eef3ff;
+      color:#355bd6;
+      font-weight:800;
+      margin-bottom:10px;
+      font-size:13px;
+    }
+    .en{
+      font-size:18px;
+      font-weight:800;
+      line-height:1.4;
+      margin-bottom:6px;
+    }
+    .zh{
+      color:var(--muted);
+      line-height:1.7;
+      font-size:15px;
+      min-height:48px;
+    }
+    .item-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .mini{
+      padding:8px 10px;
+      border-radius:10px;
+      font-size:13px;
+    }
+    .highlighted{
+      background:linear-gradient(transparent 38%, var(--yellow) 38%);
+      padding:0 2px;
+      border-radius:4px;
+    }
+    .quiz-box{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      background:linear-gradient(180deg,#fff,#f9fbff);
+    }
+    .quiz-prompt{
+      font-size:28px;
+      font-weight:900;
+      margin-bottom:12px;
+      line-height:1.35;
+    }
+    .quiz-sub{
+      color:var(--muted);
+      margin-bottom:14px;
+    }
+    .choices{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    .choice{
+      text-align:left;
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--text);
+      padding:14px;
+      border-radius:14px;
+      font-weight:700;
+    }
+    .choice.correct{background:#effcf4;border-color:#92dbb3}
+    .choice.wrong{background:#fff1f1;border-color:#ef9c9c}
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+    .stat{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      text-align:center;
+    }
+    .stat .value{font-size:24px;font-weight:900}
+    .progress{
+      width:100%;
+      height:14px;
+      border-radius:999px;
+      background:#e7edf8;
+      overflow:hidden;
+      margin-top:12px;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,#4f7cff,#7ca4ff);
+    }
+    .exam-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+    .exam-table th,.exam-table td{
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      padding:10px 8px;
+      vertical-align:top;
+    }
+    .footer-note{
+      color:var(--muted);
+      margin-top:12px;
+      line-height:1.8;
+      font-size:14px;
+    }
+    .hidden{display:none}
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .choices{grid-template-columns:1fr}
+      .stats{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width: 600px){
+      .container{padding:12px}
+      .hero{padding:18px}
+      .card{padding:14px}
+      .list{grid-template-columns:1fr}
+      .quiz-prompt{font-size:24px}
+      .stats{grid-template-columns:1fr 1fr}
+      .exam-table{font-size:13px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>07 / 08 單字互動式學習</h1>
+      <div class="subtitle">
+        可用於 GitHub Pages 的單檔互動網頁。支援 <b>學習模式</b>、<b>闖關測驗</b>、<b>搜尋</b>、<b>螢光筆</b>、<b>熟悉度標記</b>、<b>模擬考範圍對照</b>。<br>
+        音檔採外部連結方式：07、08 各自可開啟 YouTube 音檔，不直接嵌入音源檔，較穩定也比較不會遇到 GitHub Pages 播放限制。
+      </div>
+    </section>
+
+    <div class="grid">
+      <aside class="card">
+        <h2>控制面板</h2>
+
+        <div class="section-title">
+          <strong>單字版本</strong>
+        </div>
+        <div class="btn-row" style="margin-bottom:12px">
+          <button class="primary" id="set07Btn">TEP / TEPI 07</button>
+          <button class="secondary" id="set08Btn">TEP / TEPI 08</button>
+        </div>
+
+        <div class="section-title">
+          <strong>學習模式</strong>
+        </div>
+        <div class="mode-row" style="margin-bottom:12px">
+          <button class="green" id="learnModeBtn">學習模式</button>
+          <button class="orange" id="quizModeBtn">闖關模式</button>
+        </div>
+
+        <div class="section-title">
+          <strong>範圍設定</strong>
+        </div>
+        <div class="input-row" style="margin-bottom:12px">
+          <select id="rangeSelect">
+            <option value="all">全部單字</option>
+            <option value="1-30">1–30</option>
+            <option value="1-60">1–60</option>
+            <option value="1-90">1–90</option>
+            <option value="1-120">1–120</option>
+            <option value="61-90">61–90</option>
+            <option value="91-120">91–120</option>
+          </select>
+        </div>
+
+        <div class="section-title">
+          <strong>搜尋</strong>
+        </div>
+        <div class="input-row" style="margin-bottom:12px">
+          <input type="text" id="searchInput" placeholder="可搜尋英文或中文，例如 museum / 博物館" />
+        </div>
+
+        <div class="section-title">
+          <strong>工具</strong>
+        </div>
+        <div class="btn-row" style="margin-bottom:12px">
+          <button class="ghost" id="toggleZhBtn">隱藏 / 顯示中文</button>
+          <button class="ghost" id="shuffleBtn">隨機排序</button>
+          <button class="ghost" id="highlightBtn">螢光筆：關</button>
+          <button class="red" id="resetBtn">清除本機進度</button>
+        </div>
+
+        <div class="section-title">
+          <strong>音檔</strong>
+        </div>
+        <div class="audio-row" style="margin-bottom:12px">
+          <button class="secondary" id="audio07Btn">開啟 07 音檔</button>
+          <button class="secondary" id="audio08Btn">開啟 08 音檔</button>
+        </div>
+
+        <div class="section-title">
+          <strong>目前狀態</strong>
+        </div>
+        <div>
+          <span class="badge">版本：<span id="currentSetLabel">07</span></span>
+          <span class="badge">模式：<span id="currentModeLabel">學習</span></span>
+          <span class="badge">顯示數量：<span id="showCountLabel">0</span></span>
+        </div>
+
+        <div class="footer-note">
+          小提醒：GitHub Pages 無法穩定代管 YouTube 音檔本體，因此本頁採「外部連結」方式最實際。<br>
+          所有熟悉度與螢光筆標記會儲存在同一台裝置的瀏覽器中。
+        </div>
+      </aside>
+
+      <main>
+        <section class="card" id="examCard">
+          <h2>模擬考日期與範圍</h2>
+          <table class="exam-table">
+            <thead>
+              <tr>
+                <th>考次</th>
+                <th>日期</th>
+                <th>版本</th>
+                <th>範圍</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>模擬考 1</td><td>3/20</td><td>07</td><td>1–30</td></tr>
+              <tr><td>模擬考 2</td><td>3/27</td><td>07</td><td>1–60</td></tr>
+              <tr><td>模擬考 3</td><td>4/10</td><td>07</td><td>1–90</td></tr>
+              <tr><td>模擬考 4</td><td>4/17</td><td>07</td><td>1–120</td></tr>
+              <tr><td>模擬考 5</td><td>4/24</td><td>08</td><td>1–30</td></tr>
+              <tr><td>模擬考 6</td><td>5/8</td><td>08</td><td>1–60</td></tr>
+              <tr><td>模擬考 7</td><td>5/15</td><td>08</td><td>1–90</td></tr>
+              <tr><td>模擬考 8</td><td>5/22</td><td>08</td><td>1–120</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="card" id="learnCard">
+          <div class="section-title">
+            <h2 style="margin:0">學習模式</h2>
+            <div class="muted">可點卡片做螢光筆，也可標記「已熟悉」</div>
+          </div>
+          <div id="learnList" class="list"></div>
+        </section>
+
+        <section class="card hidden" id="quizCard">
+          <div class="section-title">
+            <h2 style="margin:0">闖關模式</h2>
+            <div class="muted">每題四選一，範圍依左側設定</div>
+          </div>
+          <div class="quiz-box">
+            <div class="quiz-sub" id="quizSub">請按「開始測驗」</div>
+            <div class="quiz-prompt" id="quizPrompt">準備開始</div>
+            <div class="small-row">
+              <button class="primary" id="startQuizBtn">開始測驗</button>
+              <button class="ghost" id="nextQuizBtn">下一題</button>
+            </div>
+            <div class="choices" id="choices"></div>
+            <div class="progress"><div class="bar" id="quizBar"></div></div>
+            <div class="stats">
+              <div class="stat"><div>題目</div><div class="value" id="statQ">0</div></div>
+              <div class="stat"><div>答對</div><div class="value" id="statCorrect">0</div></div>
+              <div class="stat"><div>答錯</div><div class="value" id="statWrong">0</div></div>
+              <div class="stat"><div>正確率</div><div class="value" id="statRate">0%</div></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const audioLinks = {
+      "07": "https://youtu.be/Cj7nHJg3C18?si=KNJEwBWq1OQY8GWm",
+      "08": "https://youtu.be/xaauawQFSvU?si=96icnkbKrzF6yOdj"
+    };
+
+    const vocab07 = [
+      [1,"like","喜歡"],[2,"watch cartoons","看卡通"],[3,"do sport / do sports","做運動"],[4,"She likes to take photos.","她喜歡拍照。"],[5,"blocks","積木"],[6,"bricks","磚頭"],[7,"tell ghost stories","講鬼故事"],[8,"go to the beach","去海邊"],[9,"take photos","拍照"],[10,"What does he like to do?","他喜歡做什麼？"],[11,"What do we like to do?","我們喜歡做什麼？"],[12,"make videos","錄影片"],[13,"twins","雙胞胎"],[14,"swing","鞦韆"],[15,"circus","馬戲團"],[16,"clown","小丑"],[17,"smile","微笑"],[18,"I like to do sport.","我喜歡做運動。"],[19,"exciting","令人興奮的"],[20,"interesting","有趣的"],[21,"cool","很酷的"],[22,"crocodile","鱷魚"],[23,"class","課"],[24,"because","因為"],[25,"scary","恐怖的"],[26,"not","不是"],[27,"tiring","累的"],[28,"craft","手工藝品"],[29,"clock","時鐘"],[30,"why","為什麼"],
+      [31,"clip","夾子"],[32,"crazy","瘋狂的"],[33,"close","關上"],[34,"crow","烏鴉"],[35,"Why do you want to watch cartoons?","為什麼你想看卡通？"],[36,"I don't want to make videos because it's not interesting.","我不想拍影片，因為不有趣。"],[37,"aquarium","水族館"],[38,"arcade","遊戲機台遊樂場"],[39,"theme park / amusement park","主題遊樂園"],[40,"but","但是"],[41,"fly","飛"],[42,"frost","霜"],[43,"museum","博物館"],[44,"swimming pool","游泳池"],[45,"cinema / movie theater","電影院"],[46,"wrong","錯的"],[47,"He wants to go to the theme park, but I don't want to.","他想去主題遊樂園，但我不想。"],[48,"They don't want to go to the arcade, but she wants to.","他們不想去遊戲機台遊樂場，但她想。"],[49,"What's wrong?","怎麼了？"],[50,"I want to go to the arcade, but she wants to go to the aquarium.","我想去遊戲機台遊樂場，但她想去水族館。"],[51,"clue","線索"],[52,"treasure","寶藏"],[53,"acrobat","特技演員"],[54,"squirt","噴"],[55,"any","任何"],[56,"of","的"],[57,"by","靠近；藉由"],[58,"soon","很快"],[59,"fruit","水果"],[60,"creek","小溪"],
+      [61,"piano","鋼琴"],[62,"play ping-pong / play table tennis","打乒乓球"],[63,"chores","家務瑣事"],[64,"clean my bedroom","打掃我的房間"],[65,"stop","停止"],[66,"test","考試"],[67,"practise the piano / practice the piano","練習彈鋼琴"],[68,"finish my chores","完成我的家務"],[69,"paint a picture","畫一幅畫"],[70,"temple","寺廟"],[71,"They cleaned their bedroom yesterday evening.","昨天晚上他們打掃了房間。"],[72,"What did he do yesterday afternoon?","他昨天下午做了什麼？"],[73,"study","讀書；學習"],[74,"yesterday","昨天"],[75,"did","做（過去式）"],[76,"I played ping pong yesterday morning.","昨天早上我打了乒乓球。"],[77,"She plays... on Mondays. → She played... yesterday.","她每週一玩……→ 她昨天玩了……"],[78,"What did they... on Mondays? / Yesterday?","句型轉換題"],[79,"awful","糟糕的"],[80,"great","很棒的"],[81,"go abroad","出國"],[82,"relax","放鬆"],[83,"fine","很好"],[84,"move house","搬家"],[85,"holiday","假日"],[86,"didn't","沒有（過去式）"],[87,"anything","任何事物"],[88,"visit a museum","參觀博物館"],[89,"mummy","木乃伊"],[90,"gods","神"],
+      [91,"I have to... → She has to...","我必須……→ 她必須……"],[92,"I have to mop the floor.","我必須拖地。"],[93,"What does she have to do?","她必須做什麼？"],[94,"project","專題；作業"],[95,"please","請"],[96,"press","按"],[97,"cleaning cloth","抹布"],[98,"rubbish bin / trash can","垃圾桶"],[99,"bucket","水桶"],[100,"sponge","海綿"],[101,"soap","肥皂"],[102,"There's a mop in the bathroom.","浴室裡有一支拖把。"],[103,"There are some cleaning cloths in the kitchen.","廚房裡有一些抹布。"],[104,"No, I don't have any.","不，我沒有。"],[105,"Does she have any brooms?","她有掃把嗎？"],[106,"strawberry","草莓"],[107,"waitress","女服務生"],[108,"menu","菜單"],[109,"bar of soap","一塊肥皂"],[110,"mop","拖把"],[111,"broom","掃把"],[112,"Do you have any sponges?","你有海綿嗎？"],[113,"dragon","龍"],[114,"truck","卡車"],[115,"drink","喝"],[116,"camera","相機"],[117,"upstairs","樓上"],[118,"tray","托盤"],[119,"popcorn","爆米花"],[120,"screen","螢幕"]
+    ];
+
+    const vocab08 = [
+      [1,"never","從不"],[2,"sometimes","有時候"],[3,"usually","通常"],[4,"always","總是"],[5,"do arts and crafts","做手工藝"],[6,"cook","煮飯"],[7,"ever","曾經"],[8,"play volleyball","打排球"],[9,"shout","大叫"],[10,"skunk","臭鼬"],[11,"score","分數"],[12,"He always does arts and crafts at school.","他總是在學校做手工藝。"],[13,"amusement park","遊樂園"],[14,"rollercoaster","雲霄飛車"],[15,"sphinx","獅身人面像"],[16,"I usually play volleyball at school.","我通常在學校打排球。"],[17,"She never cooks at school.","她從不在學校煮飯。"],[18,"Does she ever shout at school?","她曾在學校大叫嗎？"],[19,"classroom","教室"],[20,"playground","操場；遊戲場"],[21,"was","是（過去式）"],[22,"were","是（過去式）"],[23,"wasn't","不是（過去式）"],[24,"weren't","不是（過去式）"],[25,"canteen / cafeteria","學校餐廳"],[26,"restroom / bathroom","廁所"],[27,"slam","灌籃；砰地關上"],[28,"spell","拼字"],[29,"slide","溜滑梯"],[30,"He was in the restroom.","他在廁所。"],
+      [31,"library","圖書館"],[32,"gym","體育館"],[33,"Were they in the canteen?","他們在餐廳嗎？"],[34,"I am... → I was...","我是……→ 我是……（過去式）"],[35,"They aren't... → They weren't...","他們不是……→ 他們不是……（過去式）"],[36,"beach","海灘"],[37,"computer room","電腦教室"],[38,"music room","音樂教室"],[39,"art room","美術教室"],[40,"science lab","科學實驗室"],[41,"smash","打破；猛擊"],[42,"snow","雪"],[43,"teacher's room","老師辦公室"],[44,"hallway","走廊"],[45,"She was in the music room.","她在音樂教室。"],[46,"Where was she?","她在哪裡？"],[47,"smoke","煙"],[48,"sneeze","打噴嚏"],[49,"Where were they?","他們在哪裡？"],[50,"They were in the science lab.","他們在科學實驗室。"],[51,"river","河流"],[52,"crown","王冠"],[53,"princess","公主"],[54,"palace","宮殿"],[55,"if","如果"],[56,"after","在……之後"],[57,"good","好的"],[58,"our","我們的"],[59,"speak","說話"],[60,"skate","滑冰"],
+      [61,"see","看見"],[62,"feel","感覺"],[63,"taste","品嚐"],[64,"hear","聽見"],[65,"grab","抓住"],[66,"glue","膠水"],[67,"stone / rock","石頭"],[68,"dirt","泥土"],[69,"flower","花"],[70,"smell","聞"],[71,"bell","鈴鐺"],[72,"cafe","咖啡館"],[73,"sand","沙子"],[74,"I can smell a flower.","我可以聞到花香。"],[75,"She can feel dirt.","她可以感覺到泥土。"],[76,"What can you see?","你可以看到什麼？"],[77,"grow","成長"],[78,"glass","玻璃"],[79,"have to","必須"],[80,"vacuum the carpet","用吸塵器吸地毯"],[81,"mop the floor","拖地"],[82,"clean the windows","清潔窗戶"],[83,"plant","植物"],[84,"prize","獎品"],[85,"take out the rubbish / take out the trash","拿垃圾出去"],[86,"tidy up","整理"],[87,"sweep the floor","掃地"],[88,"throw it away","把它丟掉"],[89,"supermarket","超級市場"],[90,"milkshake","奶昔"],
+      [91,"I have to... → She has to...","我必須……→ 她必須……"],[92,"I have to mop the floor.","我必須拖地。"],[93,"What does she have to do?","她必須做什麼？"],[94,"project","專題；作業"],[95,"please","請"],[96,"press","按"],[97,"Italy","義大利"],[98,"the USA","美國"],[99,"Egypt","埃及"],[100,"ride a camel","騎駱駝"],[101,"switch","開關"],[102,"twins","雙胞胎"],[103,"eat hamburgers","吃漢堡"],[104,"drink coffee","喝咖啡"],[105,"see the pyramids","看金字塔"],[106,"dark","黑暗的"],[107,"scream","尖叫"],[108,"I went to Italy.","我去了義大利。"],[109,"see the Statue of Liberty","看自由女神"],[110,"eat pasta","吃義大利麵"],[111,"What did you do?","你做了什麼？"],[112,"I saw the pyramids.","我看到了金字塔。"],[113,"scratch","抓；刮"],[114,"string","細繩"],[115,"Where did you go?","你去了哪裡？"],[116,"I eat... on Mondays. → I ate...","我每週一吃……→ 我吃了……"],[117,"She sees... on Mondays. → She saw...","她每週一看見……→ 她看見了……"],[118,"They go... on Mondays. → They went...","他們每週一去……→ 他們去了……"],[119,"here","這裡"],[120,"as","作為"]
+    ];
+
+    const storeKey = 'vocab0708_local_progress_v1';
+    const defaultState = {
+      currentSet: '07',
+      mode: 'learn',
+      range: 'all',
+      hideZh: false,
+      highlightMode: false,
+      highlighted: {},
+      mastered: {},
+      quiz: { index: 0, total: 10, correct: 0, wrong: 0, active: false, queue: [], current: null, answered: false },
+    };
+
+    let state = loadState();
+    let shuffled = false;
+
+    const set07Btn = document.getElementById('set07Btn');
+    const set08Btn = document.getElementById('set08Btn');
+    const learnModeBtn = document.getElementById('learnModeBtn');
+    const quizModeBtn = document.getElementById('quizModeBtn');
+    const rangeSelect = document.getElementById('rangeSelect');
+    const searchInput = document.getElementById('searchInput');
+    const toggleZhBtn = document.getElementById('toggleZhBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const highlightBtn = document.getElementById('highlightBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const audio07Btn = document.getElementById('audio07Btn');
+    const audio08Btn = document.getElementById('audio08Btn');
+    const currentSetLabel = document.getElementById('currentSetLabel');
+    const currentModeLabel = document.getElementById('currentModeLabel');
+    const showCountLabel = document.getElementById('showCountLabel');
+    const learnCard = document.getElementById('learnCard');
+    const quizCard = document.getElementById('quizCard');
+    const learnList = document.getElementById('learnList');
+    const quizSub = document.getElementById('quizSub');
+    const quizPrompt = document.getElementById('quizPrompt');
+    const choicesEl = document.getElementById('choices');
+    const startQuizBtn = document.getElementById('startQuizBtn');
+    const nextQuizBtn = document.getElementById('nextQuizBtn');
+    const statQ = document.getElementById('statQ');
+    const statCorrect = document.getElementById('statCorrect');
+    const statWrong = document.getElementById('statWrong');
+    const statRate = document.getElementById('statRate');
+    const quizBar = document.getElementById('quizBar');
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(storeKey);
+        return raw ? {...defaultState, ...JSON.parse(raw)} : JSON.parse(JSON.stringify(defaultState));
+      }catch(e){
+        return JSON.parse(JSON.stringify(defaultState));
+      }
+    }
+
+    function saveState(){
+      localStorage.setItem(storeKey, JSON.stringify(state));
+    }
+
+    function getSetData(){
+      return state.currentSet === '07' ? vocab07 : vocab08;
+    }
+
+    function getFilteredData(){
+      let data = [...getSetData()];
+      const range = state.range;
+      if(range !== 'all'){
+        const [a,b] = range.split('-').map(Number);
+        data = data.filter(item => item[0] >= a && item[0] <= b);
+      }
+      const kw = searchInput.value.trim().toLowerCase();
+      if(kw){
+        data = data.filter(item => item[1].toLowerCase().includes(kw) || item[2].toLowerCase().includes(kw));
+      }
+      if(shuffled){
+        data = shuffle([...data]);
+      }
+      return data;
+    }
+
+    function keyFor(id){
+      return `${state.currentSet}-${id}`;
+    }
+
+    function render(){
+      currentSetLabel.textContent = state.currentSet;
+      currentModeLabel.textContent = state.mode === 'learn' ? '學習' : '闖關';
+      rangeSelect.value = state.range;
+      highlightBtn.textContent = `螢光筆：${state.highlightMode ? '開' : '關'}`;
+      learnCard.classList.toggle('hidden', state.mode !== 'learn');
+      quizCard.classList.toggle('hidden', state.mode !== 'quiz');
+
+      const data = getFilteredData();
+      showCountLabel.textContent = data.length;
+
+      if(state.mode === 'learn') renderLearn(data);
+      else renderQuizStats();
+      saveState();
+    }
+
+    function renderLearn(data){
+      learnList.innerHTML = '';
+      if(!data.length){
+        learnList.innerHTML = '<div class="muted">查無符合條件的單字。</div>';
+        return;
+      }
+      data.forEach(([id,en,zh]) => {
+        const k = keyFor(id);
+        const highlighted = !!state.highlighted[k];
+        const mastered = !!state.mastered[k];
+        const card = document.createElement('div');
+        card.className = `vocab-item ${mastered ? 'mastered' : ''}`;
+        card.innerHTML = `
+          <div class="num">${id}</div>
+          <div class="en ${highlighted ? 'highlighted' : ''}">${escapeHtml(en)}</div>
+          <div class="zh ${state.hideZh ? 'hidden' : ''} ${highlighted ? 'highlighted' : ''}">${escapeHtml(zh)}</div>
+          <div class="item-actions">
+            <button class="mini secondary">${mastered ? '取消熟悉' : '標記熟悉'}</button>
+            <button class="mini ghost">複習這題</button>
+          </div>
+        `;
+        const [masterBtn, reviewBtn] = card.querySelectorAll('button');
+
+        card.addEventListener('click', (e)=>{
+          if(e.target.tagName === 'BUTTON') return;
+          if(!state.highlightMode) return;
+          state.highlighted[k] = !state.highlighted[k];
+          render();
+        });
+
+        masterBtn.addEventListener('click', ()=>{
+          state.mastered[k] = !state.mastered[k];
+          render();
+        });
+
+        reviewBtn.addEventListener('click', ()=>{
+          state.mode = 'quiz';
+          state.quiz.active = true;
+          state.quiz.queue = [[id,en,zh]];
+          state.quiz.index = 0;
+          state.quiz.correct = 0;
+          state.quiz.wrong = 0;
+          state.quiz.answered = false;
+          setupSingleQuiz([id,en,zh]);
+          render();
+        });
+
+        learnList.appendChild(card);
+      });
+    }
+
+    function renderQuizStats(){
+      const q = state.quiz;
+      statQ.textContent = q.index;
+      statCorrect.textContent = q.correct;
+      statWrong.textContent = q.wrong;
+      const totalDone = q.correct + q.wrong;
+      const rate = totalDone ? Math.round((q.correct / totalDone) * 100) : 0;
+      statRate.textContent = `${rate}%`;
+      const barPct = q.total ? Math.min(100, Math.round((q.index / q.total) * 100)) : 0;
+      quizBar.style.width = `${barPct}%`;
+    }
+
+    function startQuiz(){
+      const data = getFilteredData();
+      if(!data.length){
+        quizPrompt.textContent = '目前沒有可測驗的單字';
+        quizSub.textContent = '請調整範圍或搜尋條件';
+        choicesEl.innerHTML = '';
+        return;
+      }
+      const queue = shuffle([...data]).slice(0, Math.min(10, data.length));
+      state.quiz = { index: 0, total: queue.length, correct: 0, wrong: 0, active: true, queue, current: null, answered: false };
+      nextQuestion();
+    }
+
+    function setupSingleQuiz(item){
+      state.quiz.total = 1;
+      state.quiz.queue = [item];
+      state.quiz.index = 0;
+      state.quiz.current = null;
+      state.quiz.answered = false;
+      nextQuestion();
+    }
+
+    function nextQuestion(){
+      const q = state.quiz;
+      if(!q.queue.length){
+        quizPrompt.textContent = '本回合完成';
+        const rate = (q.correct + q.wrong) ? Math.round((q.correct/(q.correct+q.wrong))*100) : 0;
+        quizSub.textContent = `完成 ${q.total} 題，正確率 ${rate}%`;
+        choicesEl.innerHTML = '';
+        renderQuizStats();
+        saveState();
+        return;
+      }
+      q.current = q.queue.shift();
+      q.index += 1;
+      q.answered = false;
+      const [id,en,zh] = q.current;
+      quizPrompt.textContent = en;
+      quizSub.textContent = `第 ${q.index} / ${q.total} 題：請選出正確中文`;
+
+      const pool = getSetData().filter(item => item[0] !== id);
+      const wrongs = shuffle(pool).slice(0,3).map(x => x[2]);
+      const options = shuffle([zh, ...wrongs]);
+      choicesEl.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'choice';
+        btn.textContent = opt;
+        btn.addEventListener('click', ()=>answerChoice(btn, opt === zh, zh));
+        choicesEl.appendChild(btn);
+      });
+      renderQuizStats();
+      saveState();
+    }
+
+    function answerChoice(btn, isCorrect, answerZh){
+      if(state.quiz.answered) return;
+      state.quiz.answered = true;
+      const buttons = [...choicesEl.querySelectorAll('.choice')];
+      buttons.forEach(b=>{
+        b.disabled = true;
+        if(b.textContent === answerZh) b.classList.add('correct');
+      });
+      if(isCorrect){
+        btn.classList.add('correct');
+        state.quiz.correct += 1;
+      }else{
+        btn.classList.add('wrong');
+        state.quiz.wrong += 1;
+      }
+      renderQuizStats();
+      saveState();
+    }
+
+    function shuffle(arr){
+      for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function escapeHtml(str){
+      return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    set07Btn.addEventListener('click', ()=>{ state.currentSet = '07'; render(); });
+    set08Btn.addEventListener('click', ()=>{ state.currentSet = '08'; render(); });
+    learnModeBtn.addEventListener('click', ()=>{ state.mode = 'learn'; render(); });
+    quizModeBtn.addEventListener('click', ()=>{ state.mode = 'quiz'; render(); });
+    rangeSelect.addEventListener('change', e=>{ state.range = e.target.value; render(); });
+    searchInput.addEventListener('input', render);
+    toggleZhBtn.addEventListener('click', ()=>{ state.hideZh = !state.hideZh; render(); });
+    shuffleBtn.addEventListener('click', ()=>{ shuffled = !shuffled; shuffleBtn.textContent = shuffled ? '取消隨機' : '隨機排序'; render(); });
+    highlightBtn.addEventListener('click', ()=>{ state.highlightMode = !state.highlightMode; render(); });
+    resetBtn.addEventListener('click', ()=>{
+      if(confirm('要清除本機熟悉度、螢光筆與測驗紀錄嗎？')){
+        localStorage.removeItem(storeKey);
+        state = loadState();
+        shuffled = false;
+        shuffleBtn.textContent = '隨機排序';
+        searchInput.value = '';
+        render();
+      }
+    });
+    audio07Btn.addEventListener('click', ()=>window.open(audioLinks['07'], '_blank'));
+    audio08Btn.addEventListener('click', ()=>window.open(audioLinks['08'], '_blank'));
+    startQuizBtn.addEventListener('click', startQuiz);
+    nextQuizBtn.addEventListener('click', nextQuestion);
+
+    render();
+  </script>
+</body>
+</html>
