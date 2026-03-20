@@ -132,6 +132,54 @@
       position:relative;
       overflow:hidden;
     }
+    .flip-card{
+      perspective:1000px;
+      min-height:150px;
+    }
+    .flip-inner{
+      position:relative;
+      width:100%;
+      min-height:150px;
+      transition:transform .45s ease;
+      transform-style:preserve-3d;
+    }
+    .flip-card.flipped .flip-inner{
+      transform:rotateY(180deg);
+    }
+    .flip-front,.flip-back{
+      position:absolute;
+      inset:0;
+      backface-visibility:hidden;
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      box-shadow:0 8px 20px rgba(58,84,143,.08);
+    }
+    .flip-back{
+      transform:rotateY(180deg);
+      background:linear-gradient(180deg,#ffffff,#f6f9ff);
+    }
+    .flip-zh{
+      font-size:24px;
+      font-weight:900;
+      line-height:1.5;
+    }
+    .flip-en{
+      font-size:22px;
+      font-weight:900;
+      line-height:1.5;
+    }
+    .flip-tip{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+    }
     .vocab-item.mastered{
       outline:2px solid rgba(32,164,100,.24);
       background:linear-gradient(180deg,#ffffff,#f4fff8);
@@ -299,6 +347,8 @@
         <div class="mode-row" style="margin-bottom:12px">
           <button class="green" id="learnModeBtn">學習模式</button>
           <button class="orange" id="quizModeBtn">闖關模式</button>
+          <button class="secondary" id="cardModeBtn">單字翻卡</button>
+          <button class="ghost" id="spellModeBtn">拼字練習</button>
         </div>
 
         <div class="section-title">
@@ -389,6 +439,44 @@
           <div id="learnList" class="list"></div>
         </section>
 
+        <section class="card hidden" id="cardCard">
+          <div class="section-title">
+            <h2 style="margin:0">單字翻卡</h2>
+            <div class="muted">正面中文，點一下翻到背面英文</div>
+          </div>
+          <div class="btn-row" style="margin-bottom:12px">
+            <button class="primary" id="shuffleCardsBtn">翻卡重洗</button>
+          </div>
+          <div id="cardList" class="list"></div>
+        </section>
+
+        <section class="card hidden" id="spellCard">
+          <div class="section-title">
+            <h2 style="margin:0">拼字練習</h2>
+            <div class="muted">每次亂數挖空，輸入完整英文單字或句子</div>
+          </div>
+          <div class="quiz-box">
+            <div class="quiz-sub" id="spellSub">請按「開始拼字」</div>
+            <div class="quiz-prompt" id="spellPrompt">準備開始</div>
+            <div class="muted" id="spellHint" style="margin-bottom:12px"></div>
+            <div class="input-row" style="margin-bottom:12px">
+              <input type="text" id="spellInput" placeholder="請輸入完整英文" />
+            </div>
+            <div class="small-row">
+              <button class="primary" id="startSpellBtn">開始拼字</button>
+              <button class="green" id="checkSpellBtn">檢查答案</button>
+              <button class="ghost" id="nextSpellBtn">下一題</button>
+              <button class="ghost" id="showSpellAnswerBtn">顯示答案</button>
+            </div>
+            <div class="stats">
+              <div class="stat"><div>題目</div><div class="value" id="spellQ">0</div></div>
+              <div class="stat"><div>答對</div><div class="value" id="spellCorrect">0</div></div>
+              <div class="stat"><div>答錯</div><div class="value" id="spellWrong">0</div></div>
+              <div class="stat"><div>正確率</div><div class="value" id="spellRate">0%</div></div>
+            </div>
+          </div>
+        </section>
+
         <section class="card hidden" id="quizCard">
           <div class="section-title">
             <h2 style="margin:0">闖關模式</h2>
@@ -445,6 +533,7 @@
       highlighted: {},
       mastered: {},
       quiz: { index: 0, total: 10, correct: 0, wrong: 0, active: false, queue: [], current: null, answered: false },
+      spell: { index: 0, total: 10, correct: 0, wrong: 0, queue: [], current: null, answered: false }
     };
 
     let state = loadState();
@@ -454,6 +543,8 @@
     const set08Btn = document.getElementById('set08Btn');
     const learnModeBtn = document.getElementById('learnModeBtn');
     const quizModeBtn = document.getElementById('quizModeBtn');
+    const cardModeBtn = document.getElementById('cardModeBtn');
+    const spellModeBtn = document.getElementById('spellModeBtn');
     const rangeSelect = document.getElementById('rangeSelect');
     const searchInput = document.getElementById('searchInput');
     const toggleZhBtn = document.getElementById('toggleZhBtn');
@@ -466,9 +557,25 @@
     const currentModeLabel = document.getElementById('currentModeLabel');
     const showCountLabel = document.getElementById('showCountLabel');
     const learnCard = document.getElementById('learnCard');
+    const cardCard = document.getElementById('cardCard');
+    const spellCard = document.getElementById('spellCard');
     const quizCard = document.getElementById('quizCard');
     const learnList = document.getElementById('learnList');
+    const cardList = document.getElementById('cardList');
+    const shuffleCardsBtn = document.getElementById('shuffleCardsBtn');
     const quizSub = document.getElementById('quizSub');
+    const spellSub = document.getElementById('spellSub');
+    const spellPrompt = document.getElementById('spellPrompt');
+    const spellHint = document.getElementById('spellHint');
+    const spellInput = document.getElementById('spellInput');
+    const startSpellBtn = document.getElementById('startSpellBtn');
+    const checkSpellBtn = document.getElementById('checkSpellBtn');
+    const nextSpellBtn = document.getElementById('nextSpellBtn');
+    const showSpellAnswerBtn = document.getElementById('showSpellAnswerBtn');
+    const spellQ = document.getElementById('spellQ');
+    const spellCorrect = document.getElementById('spellCorrect');
+    const spellWrong = document.getElementById('spellWrong');
+    const spellRate = document.getElementById('spellRate');
     const quizPrompt = document.getElementById('quizPrompt');
     const choicesEl = document.getElementById('choices');
     const startQuizBtn = document.getElementById('startQuizBtn');
@@ -519,17 +626,22 @@
 
     function render(){
       currentSetLabel.textContent = state.currentSet;
-      currentModeLabel.textContent = state.mode === 'learn' ? '學習' : '闖關';
+      const modeMap = { learn:'學習', quiz:'闖關', card:'翻卡', spell:'拼字' };
+      currentModeLabel.textContent = modeMap[state.mode] || '學習';
       rangeSelect.value = state.range;
       highlightBtn.textContent = `螢光筆：${state.highlightMode ? '開' : '關'}`;
       learnCard.classList.toggle('hidden', state.mode !== 'learn');
+      cardCard.classList.toggle('hidden', state.mode !== 'card');
+      spellCard.classList.toggle('hidden', state.mode !== 'spell');
       quizCard.classList.toggle('hidden', state.mode !== 'quiz');
 
       const data = getFilteredData();
       showCountLabel.textContent = data.length;
 
       if(state.mode === 'learn') renderLearn(data);
-      else renderQuizStats();
+      if(state.mode === 'card') renderCards(data);
+      if(state.mode === 'quiz') renderQuizStats();
+      if(state.mode === 'spell') renderSpellStats();
       saveState();
     }
 
@@ -582,6 +694,44 @@
 
         learnList.appendChild(card);
       });
+    }
+
+    function renderCards(data){
+      cardList.innerHTML = '';
+      if(!data.length){
+        cardList.innerHTML = '<div class="muted">查無符合條件的單字。</div>';
+        return;
+      }
+      data.forEach(([id,en,zh]) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'flip-card';
+        wrap.innerHTML = `
+          <div class="flip-inner">
+            <div class="flip-front">
+              <div class="num">${id}</div>
+              <div class="flip-zh">${escapeHtml(zh)}</div>
+              <div class="flip-tip">點一下翻到英文</div>
+            </div>
+            <div class="flip-back">
+              <div class="num">${id}</div>
+              <div class="flip-en">${escapeHtml(en)}</div>
+              <div class="flip-tip">再點一下翻回中文</div>
+            </div>
+          </div>
+        `;
+        wrap.addEventListener('click', ()=> wrap.classList.toggle('flipped'));
+        cardList.appendChild(wrap);
+      });
+    }
+
+    function renderSpellStats(){
+      const s = state.spell;
+      spellQ.textContent = s.index;
+      spellCorrect.textContent = s.correct;
+      spellWrong.textContent = s.wrong;
+      const totalDone = s.correct + s.wrong;
+      const rate = totalDone ? Math.round((s.correct / totalDone) * 100) : 0;
+      spellRate.textContent = `${rate}%`;
     }
 
     function renderQuizStats(){
@@ -670,6 +820,78 @@
       saveState();
     }
 
+    function makeMaskedWord(text){
+      const chars = [...text];
+      const letterIdx = chars.map((ch,i) => /[A-Za-z]/.test(ch) ? i : -1).filter(i => i >= 0);
+      if(letterIdx.length <= 2) return text;
+      const keepCount = Math.max(2, Math.ceil(letterIdx.length * 0.45));
+      const shuffledIdx = shuffle([...letterIdx]);
+      const keep = new Set(shuffledIdx.slice(0, keepCount));
+      return chars.map((ch,i)=>{
+        if(!/[A-Za-z]/.test(ch)) return ch;
+        return keep.has(i) ? ch : '_';
+      }).join('');
+    }
+
+    function startSpell(){
+      const data = getFilteredData();
+      if(!data.length){
+        spellPrompt.textContent = '目前沒有可練習的單字';
+        spellSub.textContent = '請調整範圍或搜尋條件';
+        spellHint.textContent = '';
+        return;
+      }
+      const queue = shuffle([...data]).slice(0, Math.min(10, data.length));
+      state.spell = { index: 0, total: queue.length, correct: 0, wrong: 0, queue, current: null, answered: false };
+      nextSpell();
+    }
+
+    function nextSpell(){
+      const s = state.spell;
+      spellInput.value = '';
+      if(!s.queue.length){
+        const rate = (s.correct + s.wrong) ? Math.round((s.correct/(s.correct+s.wrong))*100) : 0;
+        spellPrompt.textContent = '本回合完成';
+        spellSub.textContent = `完成 ${s.total} 題，正確率 ${rate}%`;
+        spellHint.textContent = '';
+        renderSpellStats();
+        saveState();
+        return;
+      }
+      s.current = s.queue.shift();
+      s.index += 1;
+      s.answered = false;
+      const [id,en,zh] = s.current;
+      spellPrompt.textContent = makeMaskedWord(en);
+      spellSub.textContent = `第 ${s.index} / ${s.total} 題`;
+      spellHint.textContent = `中文提示：${zh}`;
+      renderSpellStats();
+      saveState();
+    }
+
+    function checkSpell(){
+      const s = state.spell;
+      if(!s.current || s.answered) return;
+      const answer = spellInput.value.trim();
+      const correct = s.current[1].trim();
+      s.answered = true;
+      if(answer.toLowerCase() === correct.toLowerCase()){
+        s.correct += 1;
+        spellSub.textContent = '答對了，很好。';
+      }else{
+        s.wrong += 1;
+        spellSub.textContent = `答錯了，正解：${correct}`;
+      }
+      renderSpellStats();
+      saveState();
+    }
+
+    function showSpellAnswer(){
+      const s = state.spell;
+      if(!s.current) return;
+      spellSub.textContent = `答案：${s.current[1]}`;
+    }
+
     function shuffle(arr){
       for(let i = arr.length - 1; i > 0; i--){
         const j = Math.floor(Math.random() * (i + 1));
@@ -686,6 +908,8 @@
     set08Btn.addEventListener('click', ()=>{ state.currentSet = '08'; render(); });
     learnModeBtn.addEventListener('click', ()=>{ state.mode = 'learn'; render(); });
     quizModeBtn.addEventListener('click', ()=>{ state.mode = 'quiz'; render(); });
+    cardModeBtn.addEventListener('click', ()=>{ state.mode = 'card'; render(); });
+    spellModeBtn.addEventListener('click', ()=>{ state.mode = 'spell'; render(); });
     rangeSelect.addEventListener('change', e=>{ state.range = e.target.value; render(); });
     searchInput.addEventListener('input', render);
     toggleZhBtn.addEventListener('click', ()=>{ state.hideZh = !state.hideZh; render(); });
@@ -705,6 +929,12 @@
     audio08Btn.addEventListener('click', ()=>window.open(audioLinks['08'], '_blank'));
     startQuizBtn.addEventListener('click', startQuiz);
     nextQuizBtn.addEventListener('click', nextQuestion);
+    startSpellBtn.addEventListener('click', startSpell);
+    checkSpellBtn.addEventListener('click', checkSpell);
+    nextSpellBtn.addEventListener('click', nextSpell);
+    showSpellAnswerBtn.addEventListener('click', showSpellAnswer);
+    shuffleCardsBtn.addEventListener('click', ()=>{ shuffled = true; render(); setTimeout(()=>{ shuffled = false; }, 50); });
+    spellInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') checkSpell(); });
 
     render();
   </script>
