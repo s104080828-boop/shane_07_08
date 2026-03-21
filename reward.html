@@ -118,7 +118,7 @@
 
         <div class="small-row" style="margin-top:12px">
           <button class="green" id="startLevelBtn">開始這一關</button>
-          <button class="ghost" id="showWordsBtn">顯示本關單字</button>
+          <button class="ghost" id="showWordsBtn">查看本關單字</button>
           <button class="red" id="resetProgressBtn">清除進度</button>
         </div>
 
@@ -136,22 +136,13 @@
       </aside>
 
       <main>
-        <section class="card" id="wordsCard" style="display:none;margin-bottom:16px">
-          <div class="section-title">
-            <h2 style="margin:0">本關單字</h2>
-            <div class="muted">照字卡順序排列</div>
-          </div>
-          <div class="word-list" id="wordList"></div>
-        </section>
-
-        <section class="card">
+        
           <div class="section-title">
             <h2 style="margin:0">闖關測驗</h2>
             <div class="muted">每題四選一，10 題全對才算過關</div>
           </div>
 
-          <div class="quiz-box">
-            <div class="q-meta" id="qMeta">請先選擇關卡後開始</div>
+          <div cl<div class="muted">只有主動按「查看本關單字」時才會顯示</div> class="q-meta" id="qMeta">請先選擇關卡後開始</div>
             <div class="q-word" id="qWord">準備開始</div>
             <div class="small-row">
               <button class="primary" id="nextBtn">下一題</button>
@@ -309,38 +300,14 @@
 
     function nextQuestion(){
       const g = state.game;
-      if(!g.active){
-        qMeta.textContent = '請先開始這一關';
-        qWord.textContent = '準備開始';
-        choices.innerHTML = '';
-        return;
-      }
-      if(g.queue.length === 0){
-        finishLevel();
-        return;
-      }
-      g.current = g.queue.shift();
-      g.index += 1;
-      g.answered = false;
-      const [id,en,zh] = g.current;
-      qMeta.textContent = `第 ${state.level} 關｜第 ${g.index} / 10 題`;
-      qWord.textContent = en;
-      const pool = getData().filter(item => item[0] !== id);
-      const wrongs = shuffle([...pool]).slice(0,3).map(x => x[2]);
-      const options = shuffle([zh, ...wrongs]);
-      choices.innerHTML = '';
-      options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'choice';
-        btn.textContent = opt;
-        btn.addEventListener('click', ()=>answer(btn, opt === zh, zh));
-        choices.appendChild(btn);
-      });
-      renderStats();
-      saveState();
-    }
-
-    function answer(btn, isCorrect, answerZh){
+     function startLevel(){
+      const words = getLevelWords(state.level);
+      state.game = { active:true, queue: shuffle([...words]), current:null, index:0, correct:0, wrong:0, answered:false };
+      rewardBox.style.display = 'none';
+      wordsCard.style.display = 'none';
+      nextQuestion();
+    } shuffle([...pool]).slice(0,3).map(x => x[2]);
+      const tn, isCorrect, answerZh){
       const g = state.game;
       if(g.answered) return;
       g.answered = true;
@@ -358,10 +325,7 @@
       }
       renderStats();
       saveState();
-    }
-
-    function finishLevel(){
-      const g = state.game;
+    ame;
       const perfect = g.correct === 10 && g.wrong === 0;
       if(perfect){
         getCompletedMap()[state.level] = true;
