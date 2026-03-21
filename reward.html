@@ -108,7 +108,7 @@
             <div class="small-row" style="margin-top:12px">
               <button class="primary" id="checkBtn">檢查答案</button>
               <button class="ghost" id="nextBtn">下一題</button>
-              <button class="ghost" id="showAnswerBtn">顯示答案</button>
+              
             </div>
 
             <div class="answer-box" id="answerBox">作答後會在這裡顯示結果與正確答案。</div>
@@ -136,7 +136,7 @@
     let state=loadState();
 
     const $=id=>document.getElementById(id);
-    const set07Btn=$('set07Btn'),set08Btn=$('set08Btn'),meaningModeBtn=$('meaningModeBtn'),spellingModeBtn=$('spellingModeBtn'),levelSelect=$('levelSelect'),startLevelBtn=$('startLevelBtn'),showWordsBtn=$('showWordsBtn'),resetProgressBtn=$('resetProgressBtn'),currentSetLabel=$('currentSetLabel'),currentLevelLabel=$('currentLevelLabel'),currentModeLabel=$('currentModeLabel'),totalBar=$('totalBar'),totalProgressText=$('totalProgressText'),levelGrid=$('levelGrid'),wordsCard=$('wordsCard'),wordList=$('wordList'),recordTableBody=$('recordTableBody'),qMeta=$('qMeta'),qWord=$('qWord'),qHint=$('qHint'),meaningArea=$('meaningArea'),spellingArea=$('spellingArea'),choices=$('choices'),answerInput=$('answerInput'),checkBtn=$('checkBtn'),nextBtn=$('nextBtn'),showAnswerBtn=$('showAnswerBtn'),answerBox=$('answerBox'),statIndex=$('statIndex'),statCorrect=$('statCorrect'),statWrong=$('statWrong'),statPerfect=$('statPerfect'),rewardBox=$('rewardBox');
+    const set07Btn=$('set07Btn'),set08Btn=$('set08Btn'),meaningModeBtn=$('meaningModeBtn'),spellingModeBtn=$('spellingModeBtn'),levelSelect=$('levelSelect'),startLevelBtn=$('startLevelBtn'),showWordsBtn=$('showWordsBtn'),resetProgressBtn=$('resetProgressBtn'),currentSetLabel=$('currentSetLabel'),currentLevelLabel=$('currentLevelLabel'),currentModeLabel=$('currentModeLabel'),totalBar=$('totalBar'),totalProgressText=$('totalProgressText'),levelGrid=$('levelGrid'),wordsCard=$('wordsCard'),wordList=$('wordList'),recordTableBody=$('recordTableBody'),qMeta=$('qMeta'),qWord=$('qWord'),qHint=$('qHint'),meaningArea=$('meaningArea'),spellingArea=$('spellingArea'),choices=$('choices'),answerInput=$('answerInput'),checkBtn=$('checkBtn'),nextBtn=$('nextBtn'),answerBox=$('answerBox'),statIndex=$('statIndex'),statCorrect=$('statCorrect'),statWrong=$('statWrong'),statPerfect=$('statPerfect'),rewardBox=$('rewardBox');
 
     function loadState(){try{const raw=localStorage.getItem(storeKey);return raw?{...defaultState,...JSON.parse(raw)}:JSON.parse(JSON.stringify(defaultState));}catch(e){return JSON.parse(JSON.stringify(defaultState));}}
     function saveState(){localStorage.setItem(storeKey,JSON.stringify(state));}
@@ -171,7 +171,7 @@
 
     function checkSpelling(){const g=state.game;if(!g.active||state.mode!=='spelling'||!g.current||g.answered)return;g.answered=true;const correct=g.current[1].trim();const user=answerInput.value.trim();if(user.toLowerCase()===correct.toLowerCase()){g.correct+=1;answerBox.innerHTML=`<span class="correct-text">答對了。</span> 正確答案：${esc(correct)}`;}else{g.wrong+=1;answerBox.innerHTML=`<span class="wrong-text">答錯了。</span> 正確答案：${esc(correct)}`;}renderStats();saveState();}
 
-    function showAnswer(){const g=state.game;if(!g.current)return;const correct=state.mode==='meaning'?g.current[2]:g.current[1];answerBox.innerHTML=`正確答案：<b>${esc(correct)}</b>`;}
+    
 
     function finishLevel(){const g=state.game;const pass=g.correct===10&&g.wrong===0;const rate=Math.round((g.correct/10)*100);const now=new Date();const time=`${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;getRecordList().push({level:state.level,mode:modeLabel(),time,rate,pass});if(pass){getCompletedMap()[state.level]=true;qMeta.textContent=`第 ${state.level} 關過關成功`;qWord.textContent='10 題全對，恭喜拿到獎勵';qHint.textContent='';rewardBox.classList.remove('hidden');}else{qMeta.textContent=`第 ${state.level} 關未過關`;qWord.textContent=`本關答對 ${g.correct} 題，必須 10 題全對才有獎勵。`;qHint.textContent='';rewardBox.classList.add('hidden');}choices.innerHTML='';g.active=false;render();}
     function renderStats(){const g=state.game;statIndex.textContent=g.index||0;statCorrect.textContent=g.correct||0;statWrong.textContent=g.wrong||0;statPerfect.textContent=(g.correct===10&&g.wrong===0)?'是':'否';}
@@ -185,8 +185,7 @@
     showWordsBtn.addEventListener('click',renderWords);
     checkBtn.addEventListener('click',()=>{if(state.mode==='meaning')return;checkSpelling();});
     nextBtn.addEventListener('click',nextQuestion);
-    showAnswerBtn.addEventListener('click',showAnswer);
-    answerInput.addEventListener('keydown',e=>{if(e.key==='Enter')checkSpelling();});
+        answerInput.addEventListener('keydown',e=>{if(e.key==='Enter')checkSpelling();});
     resetProgressBtn.addEventListener('click',()=>{if(confirm('要清除這個獎勵版單元的所有過關進度與紀錄嗎？')){localStorage.removeItem(storeKey);state=loadState();wordsCard.classList.add('hidden');rewardBox.classList.add('hidden');choices.innerHTML='';qMeta.textContent='請先選擇關卡後開始';qWord.textContent='準備開始';qHint.textContent='';answerInput.value='';answerBox.innerHTML='作答後會在這裡顯示結果與正確答案。';render();}});
 
     render();
