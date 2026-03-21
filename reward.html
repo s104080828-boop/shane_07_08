@@ -6,106 +6,35 @@
   <title>單字闖關獎勵版｜每10字一關</title>
   <style>
     :root{
-      --bg:#f4f7ff;
-      --card:#ffffff;
-      --line:#dce5f6;
-      --text:#1f2d3d;
-      --muted:#617089;
-      --primary:#4f7cff;
-      --green:#23a566;
-      --orange:#f6a53f;
-      --red:#e35c5c;
-      --gold:#ffda63;
-      --shadow:0 12px 28px rgba(57,86,150,.12);
-      --radius:22px;
+      --bg:#f4f7ff;--card:#ffffff;--line:#dce5f6;--text:#1f2d3d;--muted:#617089;
+      --primary:#4f7cff;--green:#23a566;--red:#e35c5c;--gold:#ffda63;
+      --shadow:0 12px 28px rgba(57,86,150,.12);--radius:22px;
     }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
-      background:linear-gradient(180deg,#ecf3ff 0%,#f8fbff 100%);
-      color:var(--text);
-    }
-    .container{max-width:1100px;margin:0 auto;padding:16px}
-    .hero,.card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-    }
-    .hero{padding:22px;margin-bottom:16px;background:linear-gradient(135deg,#fff 0%,#eef4ff 65%,#f9fbff 100%)}
-    h1{margin:0 0 8px;font-size:clamp(28px,4vw,42px);line-height:1.15}
-    .sub{color:var(--muted);line-height:1.8}
-    .layout{display:grid;grid-template-columns:340px 1fr;gap:16px}
-    .card{padding:16px}
-    .btn-row,.small-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    button,select,input{font:inherit}
-    button{border:0;border-radius:14px;padding:11px 14px;cursor:pointer;font-weight:800;transition:.15s ease}
-    button:hover{transform:translateY(-1px);opacity:.96}
-    button:active{transform:translateY(0)}
-    .primary{background:var(--primary);color:#fff}
-    .secondary{background:#eef3ff;color:#3658c9}
-    .green{background:var(--green);color:#fff}
-    .orange{background:var(--orange);color:#fff}
-    .red{background:var(--red);color:#fff}
-    .ghost{background:#f9fbff;color:var(--text);border:1px solid var(--line)}
+    *{box-sizing:border-box} body{margin:0;font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;background:linear-gradient(180deg,#ecf3ff 0%,#f8fbff 100%);color:var(--text)}
+    .container{max-width:1100px;margin:0 auto;padding:16px}.hero,.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero{padding:22px;margin-bottom:16px;background:linear-gradient(135deg,#fff 0%,#eef4ff 65%,#f9fbff 100%)} h1{margin:0 0 8px;font-size:clamp(28px,4vw,42px);line-height:1.15}.sub{color:var(--muted);line-height:1.8}
+    .layout{display:grid;grid-template-columns:340px 1fr;gap:16px}.card{padding:16px}.btn-row,.small-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    button,select{font:inherit} button{border:0;border-radius:14px;padding:11px 14px;cursor:pointer;font-weight:800;transition:.15s ease} button:hover{transform:translateY(-1px);opacity:.96} button:active{transform:translateY(0)}
+    .primary{background:var(--primary);color:#fff}.secondary{background:#eef3ff;color:#3658c9}.green{background:var(--green);color:#fff}.red{background:var(--red);color:#fff}.ghost{background:#f9fbff;color:var(--text);border:1px solid var(--line)}
     .badge{display:inline-flex;align-items:center;gap:8px;background:#f7f9ff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:14px;color:var(--muted);margin:0 8px 8px 0}
-    select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
-    .section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
-    .muted{color:var(--muted)}
-    .progress{width:100%;height:16px;border-radius:999px;background:#e7edf8;overflow:hidden;margin-top:10px}
-    .bar{height:100%;width:0%;background:linear-gradient(90deg,#4f7cff,#81a5ff)}
-    .level-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
-    .level-box{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}
-    .level-box.done{background:linear-gradient(180deg,#fffef3,#fff9d8);border-color:#ecd57a}
-    .level-title{font-weight:900;font-size:18px;margin-bottom:6px}
-    .quiz-box{border:1px solid var(--line);border-radius:18px;padding:18px;background:linear-gradient(180deg,#fff,#f9fbff)}
-    .q-meta{color:var(--muted);margin-bottom:8px}
-    .q-word{font-size:34px;font-weight:900;line-height:1.3;margin-bottom:14px}
-    .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-    .choice{text-align:left;border:1px solid var(--line);background:#fff;color:var(--text);padding:14px;border-radius:14px;font-weight:700}
-    .choice.correct{background:#effcf4;border-color:#96dcb4}
-    .choice.wrong{background:#fff2f2;border-color:#efaaaa}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
-    .stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
-    .stat .value{font-size:24px;font-weight:900}
-    .reward{
-      margin-top:16px;
-      border:2px dashed #e8c655;
-      border-radius:18px;
-      padding:18px;
-      background:linear-gradient(180deg,#fffdf2,#fff7c8);
-      text-align:center;
-    }
-    .reward-title{font-size:28px;font-weight:900;color:#7a5a00;margin-bottom:8px}
-    .reward-text{font-size:20px;font-weight:800}
-    .word-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
-    .record-table{width:100%;border-collapse:collapse;font-size:14px}
-    .record-table th,.record-table td{border-bottom:1px solid var(--line);text-align:left;padding:10px 8px;vertical-align:top}
-    .record-pass{color:#1c8c54;font-weight:800}
-    .record-fail{color:#c94747;font-weight:800}
-    .word-chip{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
-    .word-chip b{display:block;margin-bottom:4px}
-    @media (max-width: 980px){
-      .layout{grid-template-columns:1fr}
-      .choices{grid-template-columns:1fr}
-      .stats{grid-template-columns:repeat(2,1fr)}
-    }
-    @media (max-width: 600px){
-      .container{padding:12px}
-      .hero,.card{padding:14px}
-      .q-word{font-size:28px}
-      .stats{grid-template-columns:1fr 1fr}
-    }
+    select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.muted{color:var(--muted)}
+    .progress{width:100%;height:16px;border-radius:999px;background:#e7edf8;overflow:hidden;margin-top:10px}.bar{height:100%;width:0%;background:linear-gradient(90deg,#4f7cff,#81a5ff)}
+    .level-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}.level-box{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}.level-box.done{background:linear-gradient(180deg,#fffef3,#fff9d8);border-color:#ecd57a}.level-title{font-weight:900;font-size:18px;margin-bottom:6px}
+    .quiz-box{border:1px solid var(--line);border-radius:18px;padding:18px;background:linear-gradient(180deg,#fff,#f9fbff)}.q-meta{color:var(--muted);margin-bottom:8px}.q-word{font-size:34px;font-weight:900;line-height:1.3;margin-bottom:14px}
+    .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.choice{text-align:left;border:1px solid var(--line);background:#fff;color:var(--text);padding:14px;border-radius:14px;font-weight:700}.choice.correct{background:#effcf4;border-color:#96dcb4}.choice.wrong{background:#fff2f2;border-color:#efaaaa}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}.stat .value{font-size:24px;font-weight:900}
+    .reward{margin-top:16px;border:2px dashed #e8c655;border-radius:18px;padding:18px;background:linear-gradient(180deg,#fffdf2,#fff7c8);text-align:center}.reward-title{font-size:28px;font-weight:900;color:#7a5a00;margin-bottom:8px}.reward-text{font-size:20px;font-weight:800}
+    .word-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}.word-chip{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}.word-chip b{display:block;margin-bottom:4px}
+    .record-table{width:100%;border-collapse:collapse;font-size:14px}.record-table th,.record-table td{border-bottom:1px solid var(--line);text-align:left;padding:10px 8px;vertical-align:top}.record-pass{color:#1c8c54;font-weight:800}.record-fail{color:#c94747;font-weight:800}
+    @media (max-width:980px){.layout{grid-template-columns:1fr}.choices{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:600px){.container{padding:12px}.hero,.card{padding:14px}.q-word{font-size:28px}.stats{grid-template-columns:1fr 1fr}}
   </style>
 </head>
 <body>
   <div class="container">
     <section class="hero">
       <h1>單字闖關獎勵版</h1>
-      <div class="sub">
-        依照字卡原本順序，每 <b>10 個單字為 1 關</b>。每關共 10 題，<b>必須 10 題全對</b> 才能過關，並顯示獎勵：<b>3C 時間 15 分鐘</b>。
-      </div>
+      <div class="sub">依照字卡原本順序，每 <b>10 個單字為 1 關</b>。每關共 10 題，<b>必須 10 題全對</b> 才能過關，並顯示獎勵：<b>3C 時間 15 分鐘</b>。</div>
     </section>
 
     <div class="layout">
@@ -141,59 +70,34 @@
 
       <main>
         <section class="card" id="wordsCard" style="display:none;margin-bottom:16px">
-          <div class="section-title">
-            <h2 style="margin:0">本關單字</h2>
-            <div class="muted">只有主動按「查看本關單字」時才會顯示</div>
-          </div>
+          <div class="section-title"><h2 style="margin:0">本關單字</h2><div class="muted">只有主動按「查看本關單字」時才會顯示</div></div>
           <div class="word-list" id="wordList"></div>
         </section>
 
         <section class="card" style="margin-bottom:16px">
-          <div class="section-title">
-            <h2 style="margin:0">闖關紀錄表</h2>
-            <div class="muted">不限次數，只要完成一輪闖關就記錄</div>
-          </div>
+          <div class="section-title"><h2 style="margin:0">闖關紀錄表</h2><div class="muted">不限次數，只要完成一輪闖關就記錄</div></div>
           <div style="overflow:auto">
             <table class="record-table">
-              <thead>
-                <tr>
-                  <th>序</th>
-                  <th>關卡</th>
-                  <th>完成時間</th>
-                  <th>答對率</th>
-                  <th>結果</th>
-                </tr>
-              </thead>
+              <thead><tr><th>序</th><th>關卡</th><th>完成時間</th><th>答對率</th><th>結果</th></tr></thead>
               <tbody id="recordTableBody"></tbody>
             </table>
           </div>
         </section>
 
         <section class="card">
-          <div class="section-title">
-            <h2 style="margin:0">闖關測驗</h2>
-            <div class="muted">每題四選一，10 題全對才算過關</div>
-          </div>
-
+          <div class="section-title"><h2 style="margin:0">闖關測驗</h2><div class="muted">測驗時不顯示單字表；同關內單字不重複</div></div>
           <div class="quiz-box">
             <div class="q-meta" id="qMeta">請先選擇關卡後開始</div>
             <div class="q-word" id="qWord">準備開始</div>
-            <div class="small-row">
-              <button class="primary" id="nextBtn">下一題</button>
-            </div>
+            <div class="small-row"><button class="primary" id="nextBtn">下一題</button></div>
             <div class="choices" id="choices"></div>
-
             <div class="stats">
               <div class="stat"><div>題目</div><div class="value" id="statIndex">0</div></div>
               <div class="stat"><div>答對</div><div class="value" id="statCorrect">0</div></div>
               <div class="stat"><div>答錯</div><div class="value" id="statWrong">0</div></div>
               <div class="stat"><div>是否全對</div><div class="value" id="statPerfect">否</div></div>
             </div>
-
-            <div class="reward" id="rewardBox" style="display:none">
-              <div class="reward-title">過關成功</div>
-              <div class="reward-text">獎勵：3C 時間 15 分鐘</div>
-            </div>
+            <div class="reward" id="rewardBox" style="display:none"><div class="reward-title">過關成功</div><div class="reward-text">獎勵：3C 時間 15 分鐘</div></div>
           </div>
         </section>
       </main>
@@ -201,75 +105,24 @@
   </div>
 
   <script>
-    const vocab07 = [
-      [1,"like","喜歡"],[2,"watch cartoons","看卡通"],[3,"do sport / do sports","做運動"],[4,"She likes to take photos.","她喜歡拍照。"],[5,"blocks","積木"],[6,"bricks","磚頭"],[7,"tell ghost stories","講鬼故事"],[8,"go to the beach","去海邊"],[9,"take photos","拍照"],[10,"What does he like to do?","他喜歡做什麼？"],[11,"What do we like to do?","我們喜歡做什麼？"],[12,"make videos","錄影片"],[13,"twins","雙胞胎"],[14,"swing","鞦韆"],[15,"circus","馬戲團"],[16,"clown","小丑"],[17,"smile","微笑"],[18,"I like to do sport.","我喜歡做運動。"],[19,"exciting","令人興奮的"],[20,"interesting","有趣的"],[21,"cool","很酷的"],[22,"crocodile","鱷魚"],[23,"class","課"],[24,"because","因為"],[25,"scary","恐怖的"],[26,"not","不是"],[27,"tiring","累的"],[28,"craft","手工藝品"],[29,"clock","時鐘"],[30,"why","為什麼"],[31,"clip","夾子"],[32,"crazy","瘋狂的"],[33,"close","關上"],[34,"crow","烏鴉"],[35,"Why do you want to watch cartoons?","為什麼你想看卡通？"],[36,"I don't want to make videos because it's not interesting.","我不想拍影片，因為不有趣。"],[37,"aquarium","水族館"],[38,"arcade","遊戲機台遊樂場"],[39,"theme park / amusement park","主題遊樂園"],[40,"but","但是"],[41,"fly","飛"],[42,"frost","霜"],[43,"museum","博物館"],[44,"swimming pool","游泳池"],[45,"cinema / movie theater","電影院"],[46,"wrong","錯的"],[47,"He wants to go to the theme park, but I don't want to.","他想去主題遊樂園，但我不想。"],[48,"They don't want to go to the arcade, but she wants to.","他們不想去遊戲機台遊樂場，但她想。"],[49,"What's wrong?","怎麼了？"],[50,"I want to go to the arcade, but she wants to go to the aquarium.","我想去遊戲機台遊樂場，但她想去水族館。"],[51,"clue","線索"],[52,"treasure","寶藏"],[53,"acrobat","特技演員"],[54,"squirt","噴"],[55,"any","任何"],[56,"of","的"],[57,"by","靠近；藉由"],[58,"soon","很快"],[59,"fruit","水果"],[60,"creek","小溪"],[61,"piano","鋼琴"],[62,"play ping-pong / play table tennis","打乒乓球"],[63,"chores","家務瑣事"],[64,"clean my bedroom","打掃我的房間"],[65,"stop","停止"],[66,"test","考試"],[67,"practise the piano / practice the piano","練習彈鋼琴"],[68,"finish my chores","完成我的家務"],[69,"paint a picture","畫一幅畫"],[70,"temple","寺廟"],[71,"They cleaned their bedroom yesterday evening.","昨天晚上他們打掃了房間。"],[72,"What did he do yesterday afternoon?","他昨天下午做了什麼？"],[73,"study","讀書；學習"],[74,"yesterday","昨天"],[75,"did","做（過去式）"],[76,"I played ping pong yesterday morning.","昨天早上我打了乒乓球。"],[77,"She plays... on Mondays. → She played... yesterday.","她每週一玩……→ 她昨天玩了……"],[78,"What did they... on Mondays? / Yesterday?","句型轉換題"],[79,"awful","糟糕的"],[80,"great","很棒的"],[81,"go abroad","出國"],[82,"relax","放鬆"],[83,"fine","很好"],[84,"move house","搬家"],[85,"holiday","假日"],[86,"didn't","沒有（過去式）"],[87,"anything","任何事物"],[88,"visit a museum","參觀博物館"],[89,"mummy","木乃伊"],[90,"gods","神"],[91,"I have to... → She has to...","我必須……→ 她必須……"],[92,"I have to mop the floor.","我必須拖地。"],[93,"What does she have to do?","她必須做什麼？"],[94,"project","專題；作業"],[95,"please","請"],[96,"press","按"],[97,"cleaning cloth","抹布"],[98,"rubbish bin / trash can","垃圾桶"],[99,"bucket","水桶"],[100,"sponge","海綿"],[101,"soap","肥皂"],[102,"There's a mop in the bathroom.","浴室裡有一支拖把。"],[103,"There are some cleaning cloths in the kitchen.","廚房裡有一些抹布。"],[104,"No, I don't have any.","不，我沒有。"],[105,"Does she have any brooms?","她有掃把嗎？"],[106,"strawberry","草莓"],[107,"waitress","女服務生"],[108,"menu","菜單"],[109,"bar of soap","一塊肥皂"],[110,"mop","拖把"],[111,"broom","掃把"],[112,"Do you have any sponges?","你有海綿嗎？"],[113,"dragon","龍"],[114,"truck","卡車"],[115,"drink","喝"],[116,"camera","相機"],[117,"upstairs","樓上"],[118,"tray","托盤"],[119,"popcorn","爆米花"],[120,"screen","螢幕"]
-    ];
+    const vocab07 = [[1,"like","喜歡"],[2,"watch cartoons","看卡通"],[3,"do sport / do sports","做運動"],[4,"She likes to take photos.","她喜歡拍照。"],[5,"blocks","積木"],[6,"bricks","磚頭"],[7,"tell ghost stories","講鬼故事"],[8,"go to the beach","去海邊"],[9,"take photos","拍照"],[10,"What does he like to do?","他喜歡做什麼？"],[11,"What do we like to do?","我們喜歡做什麼？"],[12,"make videos","錄影片"],[13,"twins","雙胞胎"],[14,"swing","鞦韆"],[15,"circus","馬戲團"],[16,"clown","小丑"],[17,"smile","微笑"],[18,"I like to do sport.","我喜歡做運動。"],[19,"exciting","令人興奮的"],[20,"interesting","有趣的"],[21,"cool","很酷的"],[22,"crocodile","鱷魚"],[23,"class","課"],[24,"because","因為"],[25,"scary","恐怖的"],[26,"not","不是"],[27,"tiring","累的"],[28,"craft","手工藝品"],[29,"clock","時鐘"],[30,"why","為什麼"],[31,"clip","夾子"],[32,"crazy","瘋狂的"],[33,"close","關上"],[34,"crow","烏鴉"],[35,"Why do you want to watch cartoons?","為什麼你想看卡通？"],[36,"I don't want to make videos because it's not interesting.","我不想拍影片，因為不有趣。"],[37,"aquarium","水族館"],[38,"arcade","遊戲機台遊樂場"],[39,"theme park / amusement park","主題遊樂園"],[40,"but","但是"],[41,"fly","飛"],[42,"frost","霜"],[43,"museum","博物館"],[44,"swimming pool","游泳池"],[45,"cinema / movie theater","電影院"],[46,"wrong","錯的"],[47,"He wants to go to the theme park, but I don't want to.","他想去主題遊樂園，但我不想。"],[48,"They don't want to go to the arcade, but she wants to.","他們不想去遊戲機台遊樂場，但她想。"],[49,"What's wrong?","怎麼了？"],[50,"I want to go to the arcade, but she wants to go to the aquarium.","我想去遊戲機台遊樂場，但她想去水族館。"],[51,"clue","線索"],[52,"treasure","寶藏"],[53,"acrobat","特技演員"],[54,"squirt","噴"],[55,"any","任何"],[56,"of","的"],[57,"by","靠近；藉由"],[58,"soon","很快"],[59,"fruit","水果"],[60,"creek","小溪"],[61,"piano","鋼琴"],[62,"play ping-pong / play table tennis","打乒乓球"],[63,"chores","家務瑣事"],[64,"clean my bedroom","打掃我的房間"],[65,"stop","停止"],[66,"test","考試"],[67,"practise the piano / practice the piano","練習彈鋼琴"],[68,"finish my chores","完成我的家務"],[69,"paint a picture","畫一幅畫"],[70,"temple","寺廟"],[71,"They cleaned their bedroom yesterday evening.","昨天晚上他們打掃了房間。"],[72,"What did he do yesterday afternoon?","他昨天下午做了什麼？"],[73,"study","讀書；學習"],[74,"yesterday","昨天"],[75,"did","做（過去式）"],[76,"I played ping pong yesterday morning.","昨天早上我打了乒乓球。"],[77,"She plays... on Mondays. → She played... yesterday.","她每週一玩……→ 她昨天玩了……"],[78,"What did they... on Mondays? / Yesterday?","句型轉換題"],[79,"awful","糟糕的"],[80,"great","很棒的"],[81,"go abroad","出國"],[82,"relax","放鬆"],[83,"fine","很好"],[84,"move house","搬家"],[85,"holiday","假日"],[86,"didn't","沒有（過去式）"],[87,"anything","任何事物"],[88,"visit a museum","參觀博物館"],[89,"mummy","木乃伊"],[90,"gods","神"],[91,"I have to... → She has to...","我必須……→ 她必須……"],[92,"I have to mop the floor.","我必須拖地。"],[93,"What does she have to do?","她必須做什麼？"],[94,"project","專題；作業"],[95,"please","請"],[96,"press","按"],[97,"cleaning cloth","抹布"],[98,"rubbish bin / trash can","垃圾桶"],[99,"bucket","水桶"],[100,"sponge","海綿"],[101,"soap","肥皂"],[102,"There's a mop in the bathroom.","浴室裡有一支拖把。"],[103,"There are some cleaning cloths in the kitchen.","廚房裡有一些抹布。"],[104,"No, I don't have any.","不，我沒有。"],[105,"Does she have any brooms?","她有掃把嗎？"],[106,"strawberry","草莓"],[107,"waitress","女服務生"],[108,"menu","菜單"],[109,"bar of soap","一塊肥皂"],[110,"mop","拖把"],[111,"broom","掃把"],[112,"Do you have any sponges?","你有海綿嗎？"],[113,"dragon","龍"],[114,"truck","卡車"],[115,"drink","喝"],[116,"camera","相機"],[117,"upstairs","樓上"],[118,"tray","托盤"],[119,"popcorn","爆米花"],[120,"screen","螢幕"]];
+    const vocab08 = [[1,"never","從不"],[2,"sometimes","有時候"],[3,"usually","通常"],[4,"always","總是"],[5,"do arts and crafts","做手工藝"],[6,"cook","煮飯"],[7,"ever","曾經"],[8,"play volleyball","打排球"],[9,"shout","大叫"],[10,"skunk","臭鼬"],[11,"score","分數"],[12,"He always does arts and crafts at school.","他總是在學校做手工藝。"],[13,"amusement park","遊樂園"],[14,"rollercoaster","雲霄飛車"],[15,"sphinx","獅身人面像"],[16,"I usually play volleyball at school.","我通常在學校打排球。"],[17,"She never cooks at school.","她從不在學校煮飯。"],[18,"Does she ever shout at school?","她曾在學校大叫嗎？"],[19,"classroom","教室"],[20,"playground","操場；遊戲場"],[21,"was","是（過去式）"],[22,"were","是（過去式）"],[23,"wasn't","不是（過去式）"],[24,"weren't","不是（過去式）"],[25,"canteen / cafeteria","學校餐廳"],[26,"restroom / bathroom","廁所"],[27,"slam","灌籃；砰地關上"],[28,"spell","拼字"],[29,"slide","溜滑梯"],[30,"He was in the restroom.","他在廁所。"],[31,"library","圖書館"],[32,"gym","體育館"],[33,"Were they in the canteen?","他們在餐廳嗎？"],[34,"I am... → I was...","我是……→ 我是……（過去式）"],[35,"They aren't... → They weren't...","他們不是……→ 他們不是……（過去式）"],[36,"beach","海灘"],[37,"computer room","電腦教室"],[38,"music room","音樂教室"],[39,"art room","美術教室"],[40,"science lab","科學實驗室"],[41,"smash","打破；猛擊"],[42,"snow","雪"],[43,"teacher's room","老師辦公室"],[44,"hallway","走廊"],[45,"She was in the music room.","她在音樂教室。"],[46,"Where was she?","她在哪裡？"],[47,"smoke","煙"],[48,"sneeze","打噴嚏"],[49,"Where were they?","他們在哪裡？"],[50,"They were in the science lab.","他們在科學實驗室。"],[51,"river","河流"],[52,"crown","王冠"],[53,"princess","公主"],[54,"palace","宮殿"],[55,"if","如果"],[56,"after","在……之後"],[57,"good","好的"],[58,"our","我們的"],[59,"speak","說話"],[60,"skate","滑冰"],[61,"see","看見"],[62,"feel","感覺"],[63,"taste","品嚐"],[64,"hear","聽見"],[65,"grab","抓住"],[66,"glue","膠水"],[67,"stone / rock","石頭"],[68,"dirt","泥土"],[69,"flower","花"],[70,"smell","聞"],[71,"bell","鈴鐺"],[72,"cafe","咖啡館"],[73,"sand","沙子"],[74,"I can smell a flower.","我可以聞到花香。"],[75,"She can feel dirt.","她可以感覺到泥土。"],[76,"What can you see?","你可以看到什麼？"],[77,"grow","成長"],[78,"glass","玻璃"],[79,"have to","必須"],[80,"vacuum the carpet","用吸塵器吸地毯"],[81,"mop the floor","拖地"],[82,"clean the windows","清潔窗戶"],[83,"plant","植物"],[84,"prize","獎品"],[85,"take out the rubbish / take out the trash","拿垃圾出去"],[86,"tidy up","整理"],[87,"sweep the floor","掃地"],[88,"throw it away","把它丟掉"],[89,"supermarket","超級市場"],[90,"milkshake","奶昔"],[91,"I have to... → She has to...","我必須……→ 她必須……"],[92,"I have to mop the floor.","我必須拖地。"],[93,"What does she have to do?","她必須做什麼？"],[94,"project","專題；作業"],[95,"please","請"],[96,"press","按"],[97,"Italy","義大利"],[98,"the USA","美國"],[99,"Egypt","埃及"],[100,"ride a camel","騎駱駝"],[101,"switch","開關"],[102,"twins","雙胞胎"],[103,"eat hamburgers","吃漢堡"],[104,"drink coffee","喝咖啡"],[105,"see the pyramids","看金字塔"],[106,"dark","黑暗的"],[107,"scream","尖叫"],[108,"I went to Italy.","我去了義大利。"],[109,"see the Statue of Liberty","看自由女神"],[110,"eat pasta","吃義大利麵"],[111,"What did you do?","你做了什麼？"],[112,"I saw the pyramids.","我看到了金字塔。"],[113,"scratch","抓；刮"],[114,"string","細繩"],[115,"Where did you go?","你去了哪裡？"],[116,"I eat... on Mondays. → I ate...","我每週一吃……→ 我吃了……"],[117,"She sees... on Mondays. → She saw...","她每週一看見……→ 她看見了……"],[118,"They go... on Mondays. → They went...","他們每週一去……→ 他們去了……"],[119,"here","這裡"],[120,"as","作為"]];
 
-    const vocab08 = [
-      [1,"never","從不"],[2,"sometimes","有時候"],[3,"usually","通常"],[4,"always","總是"],[5,"do arts and crafts","做手工藝"],[6,"cook","煮飯"],[7,"ever","曾經"],[8,"play volleyball","打排球"],[9,"shout","大叫"],[10,"skunk","臭鼬"],[11,"score","分數"],[12,"He always does arts and crafts at school.","他總是在學校做手工藝。"],[13,"amusement park","遊樂園"],[14,"rollercoaster","雲霄飛車"],[15,"sphinx","獅身人面像"],[16,"I usually play volleyball at school.","我通常在學校打排球。"],[17,"She never cooks at school.","她從不在學校煮飯。"],[18,"Does she ever shout at school?","她曾在學校大叫嗎？"],[19,"classroom","教室"],[20,"playground","操場；遊戲場"],[21,"was","是（過去式）"],[22,"were","是（過去式）"],[23,"wasn't","不是（過去式）"],[24,"weren't","不是（過去式）"],[25,"canteen / cafeteria","學校餐廳"],[26,"restroom / bathroom","廁所"],[27,"slam","灌籃；砰地關上"],[28,"spell","拼字"],[29,"slide","溜滑梯"],[30,"He was in the restroom.","他在廁所。"],[31,"library","圖書館"],[32,"gym","體育館"],[33,"Were they in the canteen?","他們在餐廳嗎？"],[34,"I am... → I was...","我是……→ 我是……（過去式）"],[35,"They aren't... → They weren't...","他們不是……→ 他們不是……（過去式）"],[36,"beach","海灘"],[37,"computer room","電腦教室"],[38,"music room","音樂教室"],[39,"art room","美術教室"],[40,"science lab","科學實驗室"],[41,"smash","打破；猛擊"],[42,"snow","雪"],[43,"teacher's room","老師辦公室"],[44,"hallway","走廊"],[45,"She was in the music room.","她在音樂教室。"],[46,"Where was she?","她在哪裡？"],[47,"smoke","煙"],[48,"sneeze","打噴嚏"],[49,"Where were they?","他們在哪裡？"],[50,"They were in the science lab.","他們在科學實驗室。"],[51,"river","河流"],[52,"crown","王冠"],[53,"princess","公主"],[54,"palace","宮殿"],[55,"if","如果"],[56,"after","在……之後"],[57,"good","好的"],[58,"our","我們的"],[59,"speak","說話"],[60,"skate","滑冰"],[61,"see","看見"],[62,"feel","感覺"],[63,"taste","品嚐"],[64,"hear","聽見"],[65,"grab","抓住"],[66,"glue","膠水"],[67,"stone / rock","石頭"],[68,"dirt","泥土"],[69,"flower","花"],[70,"smell","聞"],[71,"bell","鈴鐺"],[72,"cafe","咖啡館"],[73,"sand","沙子"],[74,"I can smell a flower.","我可以聞到花香。"],[75,"She can feel dirt.","她可以感覺到泥土。"],[76,"What can you see?","你可以看到什麼？"],[77,"grow","成長"],[78,"glass","玻璃"],[79,"have to","必須"],[80,"vacuum the carpet","用吸塵器吸地毯"],[81,"mop the floor","拖地"],[82,"clean the windows","清潔窗戶"],[83,"plant","植物"],[84,"prize","獎品"],[85,"take out the rubbish / take out the trash","拿垃圾出去"],[86,"tidy up","整理"],[87,"sweep the floor","掃地"],[88,"throw it away","把它丟掉"],[89,"supermarket","超級市場"],[90,"milkshake","奶昔"],[91,"I have to... → She has to...","我必須……→ 她必須……"],[92,"I have to mop the floor.","我必須拖地。"],[93,"What does she have to do?","她必須做什麼？"],[94,"project","專題；作業"],[95,"please","請"],[96,"press","按"],[97,"Italy","義大利"],[98,"the USA","美國"],[99,"Egypt","埃及"],[100,"ride a camel","騎駱駝"],[101,"switch","開關"],[102,"twins","雙胞胎"],[103,"eat hamburgers","吃漢堡"],[104,"drink coffee","喝咖啡"],[105,"see the pyramids","看金字塔"],[106,"dark","黑暗的"],[107,"scream","尖叫"],[108,"I went to Italy.","我去了義大利。"],[109,"see the Statue of Liberty","看自由女神"],[110,"eat pasta","吃義大利麵"],[111,"What did you do?","你做了什麼？"],[112,"I saw the pyramids.","我看到了金字塔。"],[113,"scratch","抓；刮"],[114,"string","細繩"],[115,"Where did you go?","你去了哪裡？"],[116,"I eat... on Mondays. → I ate...","我每週一吃……→ 我吃了……"],[117,"She sees... on Mondays. → She saw...","她每週一看見……→ 她看見了……"],[118,"They go... on Mondays. → They went...","他們每週一去……→ 他們去了……"],[119,"here","這裡"],[120,"as","作為"]
-    ];
-
-    const storeKey = 'reward_unit_10_words_progress_v1';
-    const defaultState = {
-      set: '07',
-      level: 1,
-      completed07: {},
-      completed08: {},
-      records07: [],
-      records08: [],
-      game: { active:false, queue:[], current:null, index:0, correct:0, wrong:0, answered:false }
-    };
-
+    const storeKey = 'reward_unit_10_words_progress_v2';
+    const defaultState = { set:'07', level:1, completed07:{}, completed08:{}, records07:[], records08:[], game:{ active:false, queue:[], current:null, index:0, correct:0, wrong:0, answered:false } };
     let state = loadState();
 
-    const set07Btn = document.getElementById('set07Btn');
-    const set08Btn = document.getElementById('set08Btn');
-    const levelSelect = document.getElementById('levelSelect');
-    const startLevelBtn = document.getElementById('startLevelBtn');
-    const showWordsBtn = document.getElementById('showWordsBtn');
-    const resetProgressBtn = document.getElementById('resetProgressBtn');
-    const currentSetLabel = document.getElementById('currentSetLabel');
-    const currentLevelLabel = document.getElementById('currentLevelLabel');
-    const totalBar = document.getElementById('totalBar');
-    const totalProgressText = document.getElementById('totalProgressText');
-    const levelGrid = document.getElementById('levelGrid');
-    const wordsCard = document.getElementById('wordsCard');
-    const wordList = document.getElementById('wordList');
-    const qMeta = document.getElementById('qMeta');
-    const qWord = document.getElementById('qWord');
-    const choices = document.getElementById('choices');
-    const nextBtn = document.getElementById('nextBtn');
-    const statIndex = document.getElementById('statIndex');
-    const statCorrect = document.getElementById('statCorrect');
-    const statWrong = document.getElementById('statWrong');
-    const statPerfect = document.getElementById('statPerfect');
-    const rewardBox = document.getElementById('rewardBox');
-    const recordTableBody = document.getElementById('recordTableBody');
+    const set07Btn=document.getElementById('set07Btn'), set08Btn=document.getElementById('set08Btn'), levelSelect=document.getElementById('levelSelect'), startLevelBtn=document.getElementById('startLevelBtn'), showWordsBtn=document.getElementById('showWordsBtn'), resetProgressBtn=document.getElementById('resetProgressBtn'), currentSetLabel=document.getElementById('currentSetLabel'), currentLevelLabel=document.getElementById('currentLevelLabel'), totalBar=document.getElementById('totalBar'), totalProgressText=document.getElementById('totalProgressText'), levelGrid=document.getElementById('levelGrid'), wordsCard=document.getElementById('wordsCard'), wordList=document.getElementById('wordList'), recordTableBody=document.getElementById('recordTableBody'), qMeta=document.getElementById('qMeta'), qWord=document.getElementById('qWord'), choices=document.getElementById('choices'), nextBtn=document.getElementById('nextBtn'), statIndex=document.getElementById('statIndex'), statCorrect=document.getElementById('statCorrect'), statWrong=document.getElementById('statWrong'), statPerfect=document.getElementById('statPerfect'), rewardBox=document.getElementById('rewardBox');
 
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(storeKey);
-        return raw ? {...defaultState, ...JSON.parse(raw)} : JSON.parse(JSON.stringify(defaultState));
-      }catch(e){
-        return JSON.parse(JSON.stringify(defaultState));
-      }
-    }
+    function loadState(){ try{ const raw=localStorage.getItem(storeKey); return raw ? {...defaultState, ...JSON.parse(raw)} : JSON.parse(JSON.stringify(defaultState)); }catch(e){ return JSON.parse(JSON.stringify(defaultState)); } }
     function saveState(){ localStorage.setItem(storeKey, JSON.stringify(state)); }
-    function getData(){ return state.set === '07' ? vocab07 : vocab08; }
-    function getCompletedMap(){ return state.set === '07' ? state.completed07 : state.completed08; }
-    function getRecordList(){ return state.set === '07' ? state.records07 : state.records08; }
+    function getData(){ return state.set==='07' ? vocab07 : vocab08; }
+    function getCompletedMap(){ return state.set==='07' ? state.completed07 : state.completed08; }
+    function getRecordList(){ return state.set==='07' ? state.records07 : state.records08; }
     function levelCount(){ return Math.ceil(getData().length / 10); }
-    function getLevelWords(level){
-      const start = (level - 1) * 10;
-      return getData().slice(start, start + 10);
-    }
-    function shuffle(arr){
-      for(let i=arr.length-1;i>0;i--){
-        const j=Math.floor(Math.random()*(i+1));
-        [arr[i],arr[j]]=[arr[j],arr[i]];
-      }
-      return arr;
-    }
+    function getLevelWords(level){ const start=(level-1)*10; return getData().slice(start,start+10); }
+    function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+    function esc(str){ return String(str).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
     function render(){
       currentSetLabel.textContent = state.set;
@@ -283,188 +136,138 @@
     }
 
     function renderLevelSelect(){
-      levelSelect.innerHTML = '';
-      const total = levelCount();
+      levelSelect.innerHTML='';
+      const total=levelCount();
       for(let i=1;i<=total;i++){
-        const op = document.createElement('option');
-        op.value = i;
-        const words = getLevelWords(i);
-        const startNo = words[0]?.[0] ?? ((i-1)*10+1);
-        const endNo = words[words.length-1]?.[0] ?? (i*10);
-        op.textContent = `第 ${i} 關（${startNo}-${endNo}）`;
-        if(i === state.level) op.selected = true;
+        const words=getLevelWords(i);
+        const startNo=words[0]?.[0] ?? ((i-1)*10+1);
+        const endNo=words[words.length-1]?.[0] ?? (i*10);
+        const op=document.createElement('option');
+        op.value=String(i);
+        op.textContent=`第 ${i} 關（${startNo}-${endNo}）`;
+        if(i===state.level) op.selected=true;
         levelSelect.appendChild(op);
       }
     }
 
     function renderLevelGrid(){
-      levelGrid.innerHTML = '';
-      const total = levelCount();
-      const completed = getCompletedMap();
-      for(let i=1;i<=total;i++){
-        const div = document.createElement('div');
-        div.className = 'level-box' + (completed[i] ? ' done' : '');
-        div.innerHTML = `<div class="level-title">第 ${i} 關</div><div class="muted">${completed[i] ? '已過關' : '未過關'}</div>`;
-        div.addEventListener('click', ()=>{ state.level = i; render(); });
+      levelGrid.innerHTML='';
+      const completed=getCompletedMap();
+      for(let i=1;i<=levelCount();i++){
+        const div=document.createElement('div');
+        div.className='level-box'+(completed[i]?' done':'');
+        div.innerHTML=`<div class="level-title">第 ${i} 關</div><div class="muted">${completed[i]?'已過關':'未過關'}</div>`;
+        div.addEventListener('click',()=>{ state.level=i; render(); });
         levelGrid.appendChild(div);
       }
     }
 
     function renderTotalProgress(){
-      const completed = getCompletedMap();
-      const total = levelCount();
-      const done = Object.keys(completed).filter(k => completed[k]).length;
-      totalProgressText.textContent = `${done} / ${total}`;
-      totalBar.style.width = `${Math.round((done/total)*100)}%`;
+      const completed=getCompletedMap();
+      const total=levelCount();
+      const done=Object.keys(completed).filter(k=>completed[k]).length;
+      totalProgressText.textContent=`${done} / ${total}`;
+      totalBar.style.width=`${Math.round((done/total)*100)}%`;
     }
 
     function renderRecordTable(){
-      const records = getRecordList();
-      recordTableBody.innerHTML = '';
-      if(!records.length){
-        recordTableBody.innerHTML = '<tr><td colspan="5" class="muted">目前尚無紀錄</td></tr>';
-        return;
-      }
-      [...records].slice().reverse().forEach((r, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${records.length - idx}</td>
-          <td>第 ${r.level} 關</td>
-          <td>${r.time}</td>
-          <td>${r.rate}%</td>
-          <td class="${r.pass ? 'record-pass' : 'record-fail'}">${r.pass ? '過關' : '未過關'}</td>
-        `;
+      const records=getRecordList();
+      recordTableBody.innerHTML='';
+      if(!records.length){ recordTableBody.innerHTML='<tr><td colspan="5" class="muted">目前尚無紀錄</td></tr>'; return; }
+      [...records].reverse().forEach((r,idx)=>{
+        const tr=document.createElement('tr');
+        tr.innerHTML=`<td>${records.length-idx}</td><td>第 ${r.level} 關</td><td>${r.time}</td><td>${r.rate}%</td><td class="${r.pass?'record-pass':'record-fail'}">${r.pass?'過關':'未過關'}</td>`;
         recordTableBody.appendChild(tr);
       });
     }
 
     function renderWords(){
-      const words = getLevelWords(state.level);
-      wordList.innerHTML = '';
+      const words=getLevelWords(state.level);
+      wordList.innerHTML='';
       words.forEach(([id,en,zh])=>{
-        const div = document.createElement('div');
-        div.className = 'word-chip';
-        div.innerHTML = `<b>${id}. ${escapeHtml(en)}</b><span>${escapeHtml(zh)}</span>`;
+        const div=document.createElement('div');
+        div.className='word-chip';
+        div.innerHTML=`<b>${id}. ${esc(en)}</b><span>${esc(zh)}</span>`;
         wordList.appendChild(div);
       });
-      wordsCard.style.display = 'block';
+      wordsCard.style.display='block';
     }
 
     function startLevel(){
-      const words = getLevelWords(state.level);
-      state.game = { active:true, queue: shuffle([...words]), current:null, index:0, correct:0, wrong:0, answered:false };
-      rewardBox.style.display = 'none';
-      wordsCard.style.display = 'none';
+      const words=getLevelWords(state.level);
+      state.game={ active:true, queue:shuffle([...words]), current:null, index:0, correct:0, wrong:0, answered:false };
+      rewardBox.style.display='none';
+      wordsCard.style.display='none';
       nextQuestion();
     }
 
     function nextQuestion(){
-      const g = state.game;
-      if(!g.active){
-        qMeta.textContent = '請先開始這一關';
-        qWord.textContent = '準備開始';
-        choices.innerHTML = '';
-        return;
-      }
-      if(g.queue.length === 0){
-        finishLevel();
-        return;
-      }
-      g.current = g.queue.shift();
-      g.index += 1;
-      g.answered = false;
-      const [id,en,zh] = g.current;
-      qMeta.textContent = `第 ${state.level} 關｜第 ${g.index} / 10 題`;
-      qWord.textContent = en;
-      const pool = getData().filter(item => item[0] !== id);
-      const wrongs = shuffle([...pool]).slice(0,3).map(x => x[2]);
-      const options = shuffle([zh, ...wrongs]);
-      choices.innerHTML = '';
-      options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'choice';
-        btn.textContent = opt;
-        btn.addEventListener('click', ()=>answer(btn, opt === zh, zh));
+      const g=state.game;
+      if(!g.active){ qMeta.textContent='請先開始這一關'; qWord.textContent='準備開始'; choices.innerHTML=''; return; }
+      if(g.queue.length===0){ finishLevel(); return; }
+      g.current=g.queue.shift();
+      g.index+=1;
+      g.answered=false;
+      const [id,en,zh]=g.current;
+      qMeta.textContent=`第 ${state.level} 關｜第 ${g.index} / 10 題`;
+      qWord.textContent=en;
+      const pool=getData().filter(item=>item[0]!==id);
+      const wrongs=shuffle([...pool]).slice(0,3).map(x=>x[2]);
+      const options=shuffle([zh,...wrongs]);
+      choices.innerHTML='';
+      options.forEach(opt=>{
+        const btn=document.createElement('button');
+        btn.className='choice';
+        btn.textContent=opt;
+        btn.addEventListener('click',()=>answer(btn,opt===zh,zh));
         choices.appendChild(btn);
       });
       renderStats();
       saveState();
     }
 
-    function answer(btn, isCorrect, answerZh){
-      const g = state.game;
-      if(g.answered) return;
-      g.answered = true;
-      const btns = [...choices.querySelectorAll('.choice')];
-      btns.forEach(b => {
-        b.disabled = true;
-        if(b.textContent === answerZh) b.classList.add('correct');
-      });
-      if(isCorrect){
-        g.correct += 1;
-        btn.classList.add('correct');
-        qMeta.textContent = `第 ${state.level} 關｜第 ${g.index} / 10 題｜答對了，正確答案：${answerZh}`;
-      }else{
-        g.wrong += 1;
-        btn.classList.add('wrong');
-        qMeta.textContent = `第 ${state.level} 關｜第 ${g.index} / 10 題｜答錯了，正確答案：${answerZh}`;
-      }
-      renderStats();
-      saveState();
+    function answer(btn,isCorrect,answerZh){
+      const g=state.game; if(g.answered) return; g.answered=true;
+      const btns=[...choices.querySelectorAll('.choice')];
+      btns.forEach(b=>{ b.disabled=true; if(b.textContent===answerZh) b.classList.add('correct'); });
+      if(isCorrect){ g.correct+=1; btn.classList.add('correct'); qMeta.textContent=`第 ${state.level} 關｜第 ${g.index} / 10 題｜答對了，正確答案：${answerZh}`; }
+      else { g.wrong+=1; btn.classList.add('wrong'); qMeta.textContent=`第 ${state.level} 關｜第 ${g.index} / 10 題｜答錯了，正確答案：${answerZh}`; }
+      renderStats(); saveState();
     }
 
     function finishLevel(){
-      const g = state.game;
-      const perfect = g.correct === 10 && g.wrong === 0;
-      const rate = Math.round((g.correct / 10) * 100);
-      const now = new Date();
-      const timeText = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
-
-      getRecordList().push({
-        level: state.level,
-        time: timeText,
-        rate,
-        pass: perfect
-      });
-
-      if(perfect){
-        getCompletedMap()[state.level] = true;
-        qMeta.textContent = `第 ${state.level} 關過關成功`;
-        qWord.textContent = '10 題全對，恭喜拿到獎勵';
-        rewardBox.style.display = 'block';
-      }else{
-        qMeta.textContent = `第 ${state.level} 關未過關`;
-        qWord.textContent = `本關答對 ${g.correct} 題，必須 10 題全對才有獎勵。`;
-        rewardBox.style.display = 'none';
-      }
-      choices.innerHTML = '';
-      g.active = false;
+      const g=state.game;
+      const pass=g.correct===10 && g.wrong===0;
+      const rate=Math.round((g.correct/10)*100);
+      const now=new Date();
+      const time=`${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+      getRecordList().push({ level:state.level, time, rate, pass });
+      if(pass){ getCompletedMap()[state.level]=true; qMeta.textContent=`第 ${state.level} 關過關成功`; qWord.textContent='10 題全對，恭喜拿到獎勵'; rewardBox.style.display='block'; }
+      else { qMeta.textContent=`第 ${state.level} 關未過關`; qWord.textContent=`本關答對 ${g.correct} 題，必須 10 題全對才有獎勵。`; rewardBox.style.display='none'; }
+      choices.innerHTML='';
+      g.active=false;
       render();
+    }
 
     function renderStats(){
-      const g = state.game;
-      statIndex.textContent = g.index || 0;
-      statCorrect.textContent = g.correct || 0;
-      statWrong.textContent = g.wrong || 0;
-      statPerfect.textContent = (g.correct === 10 && g.wrong === 0) ? '是' : '否';
+      const g=state.game;
+      statIndex.textContent=g.index||0;
+      statCorrect.textContent=g.correct||0;
+      statWrong.textContent=g.wrong||0;
+      statPerfect.textContent=(g.correct===10 && g.wrong===0)?'是':'否';
     }
 
-    function escapeHtml(str){
-      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    }
-
-    set07Btn.addEventListener('click', ()=>{ state.set = '07'; state.level = 1; wordsCard.style.display='none'; render(); });
-    set08Btn.addEventListener('click', ()=>{ state.set = '08'; state.level = 1; wordsCard.style.display='none'; render(); });
-    levelSelect.addEventListener('change', e=>{ state.level = Number(e.target.value); render(); });
-    startLevelBtn.addEventListener('click', startLevel);
-    showWordsBtn.addEventListener('click', renderWords);
-    nextBtn.addEventListener('click', nextQuestion);
-    resetProgressBtn.addEventListener('click', ()=>{
-      if(confirm('要清除這個獎勵版單元的所有過關進度嗎？')){
+    set07Btn.addEventListener('click',()=>{ state.set='07'; state.level=1; wordsCard.style.display='none'; render(); });
+    set08Btn.addEventListener('click',()=>{ state.set='08'; state.level=1; wordsCard.style.display='none'; render(); });
+    levelSelect.addEventListener('change',e=>{ state.level=Number(e.target.value)||1; render(); });
+    startLevelBtn.addEventListener('click',startLevel);
+    showWordsBtn.addEventListener('click',renderWords);
+    nextBtn.addEventListener('click',nextQuestion);
+    resetProgressBtn.addEventListener('click',()=>{
+      if(confirm('要清除這個獎勵版單元的所有過關進度與紀錄嗎？')){
         localStorage.removeItem(storeKey);
-        state = loadState();
-        wordsCard.style.display='none';
-        rewardBox.style.display='none';
+        state=loadState();
+        wordsCard.style.display='none'; rewardBox.style.display='none'; choices.innerHTML=''; qMeta.textContent='請先選擇關卡後開始'; qWord.textContent='準備開始';
         render();
       }
     });
