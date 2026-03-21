@@ -80,6 +80,10 @@
     .reward-title{font-size:28px;font-weight:900;color:#7a5a00;margin-bottom:8px}
     .reward-text{font-size:20px;font-weight:800}
     .word-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+    .record-table{width:100%;border-collapse:collapse;font-size:14px}
+    .record-table th,.record-table td{border-bottom:1px solid var(--line);text-align:left;padding:10px 8px;vertical-align:top}
+    .record-pass{color:#1c8c54;font-weight:800}
+    .record-fail{color:#c94747;font-weight:800}
     .word-chip{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff}
     .word-chip b{display:block;margin-bottom:4px}
     @media (max-width: 980px){
@@ -136,13 +140,43 @@
       </aside>
 
       <main>
-        
+        <section class="card" id="wordsCard" style="display:none;margin-bottom:16px">
+          <div class="section-title">
+            <h2 style="margin:0">本關單字</h2>
+            <div class="muted">只有主動按「查看本關單字」時才會顯示</div>
+          </div>
+          <div class="word-list" id="wordList"></div>
+        </section>
+
+        <section class="card" style="margin-bottom:16px">
+          <div class="section-title">
+            <h2 style="margin:0">闖關紀錄表</h2>
+            <div class="muted">不限次數，只要完成一輪闖關就記錄</div>
+          </div>
+          <div style="overflow:auto">
+            <table class="record-table">
+              <thead>
+                <tr>
+                  <th>序</th>
+                  <th>關卡</th>
+                  <th>完成時間</th>
+                  <th>答對率</th>
+                  <th>結果</th>
+                </tr>
+              </thead>
+              <tbody id="recordTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
           <div class="section-title">
             <h2 style="margin:0">闖關測驗</h2>
             <div class="muted">每題四選一，10 題全對才算過關</div>
           </div>
 
-          <div cl<div class="muted">只有主動按「查看本關單字」時才會顯示</div> class="q-meta" id="qMeta">請先選擇關卡後開始</div>
+          <div class="quiz-box">
+            <div class="q-meta" id="qMeta">請先選擇關卡後開始</div>
             <div class="q-word" id="qWord">準備開始</div>
             <div class="small-row">
               <button class="primary" id="nextBtn">下一題</button>
@@ -181,6 +215,8 @@
       level: 1,
       completed07: {},
       completed08: {},
+      records07: [],
+      records08: [],
       game: { active:false, queue:[], current:null, index:0, correct:0, wrong:0, answered:false }
     };
 
@@ -208,6 +244,7 @@
     const statWrong = document.getElementById('statWrong');
     const statPerfect = document.getElementById('statPerfect');
     const rewardBox = document.getElementById('rewardBox');
+    const recordTableBody = document.getElementById('recordTableBody');
 
     function loadState(){
       try{
@@ -220,6 +257,7 @@
     function saveState(){ localStorage.setItem(storeKey, JSON.stringify(state)); }
     function getData(){ return state.set === '07' ? vocab07 : vocab08; }
     function getCompletedMap(){ return state.set === '07' ? state.completed07 : state.completed08; }
+    function getRecordList(){ return state.set === '07' ? state.records07 : state.records08; }
     function levelCount(){ return Math.ceil(getData().length / 10); }
     function getLevelWords(level){
       const start = (level - 1) * 10;
@@ -239,6 +277,7 @@
       renderLevelSelect();
       renderLevelGrid();
       renderTotalProgress();
+      renderRecordTable();
       renderStats();
       saveState();
     }
@@ -279,6 +318,26 @@
       totalBar.style.width = `${Math.round((done/total)*100)}%`;
     }
 
+    function renderRecordTable(){
+      const records = getRecordList();
+      recordTableBody.innerHTML = '';
+      if(!records.length){
+        recordTableBody.innerHTML = '<tr><td colspan="5" class="muted">目前尚無紀錄</td></tr>';
+        return;
+      }
+      [...records].slice().reverse().forEach((r, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${records.length - idx}</td>
+          <td>第 ${r.level} 關</td>
+          <td>${r.time}</td>
+          <td>${r.rate}%</td>
+          <td class="${r.pass ? 'record-pass' : 'record-fail'}">${r.pass ? '過關' : '未過關'}</td>
+        `;
+        recordTableBody.appendChild(tr);
+      });
+    }
+
     function renderWords(){
       const words = getLevelWords(state.level);
       wordList.innerHTML = '';
@@ -295,19 +354,44 @@
       const words = getLevelWords(state.level);
       state.game = { active:true, queue: shuffle([...words]), current:null, index:0, correct:0, wrong:0, answered:false };
       rewardBox.style.display = 'none';
+      wordsCard.style.display = 'none';
       nextQuestion();
     }
 
     function nextQuestion(){
       const g = state.game;
-     function startLevel(){
-      const words = getLevelWords(state.level);
-      state.game = { active:true, queue: shuffle([...words]), current:null, index:0, correct:0, wrong:0, answered:false };
-      rewardBox.style.display = 'none';
-      wordsCard.style.display = 'none';
-      nextQuestion();
-    } shuffle([...pool]).slice(0,3).map(x => x[2]);
-      const tn, isCorrect, answerZh){
+      if(!g.active){
+        qMeta.textContent = '請先開始這一關';
+        qWord.textContent = '準備開始';
+        choices.innerHTML = '';
+        return;
+      }
+      if(g.queue.length === 0){
+        finishLevel();
+        return;
+      }
+      g.current = g.queue.shift();
+      g.index += 1;
+      g.answered = false;
+      const [id,en,zh] = g.current;
+      qMeta.textContent = `第 ${state.level} 關｜第 ${g.index} / 10 題`;
+      qWord.textContent = en;
+      const pool = getData().filter(item => item[0] !== id);
+      const wrongs = shuffle([...pool]).slice(0,3).map(x => x[2]);
+      const options = shuffle([zh, ...wrongs]);
+      choices.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'choice';
+        btn.textContent = opt;
+        btn.addEventListener('click', ()=>answer(btn, opt === zh, zh));
+        choices.appendChild(btn);
+      });
+      renderStats();
+      saveState();
+    }
+
+    function answer(btn, isCorrect, answerZh){
       const g = state.game;
       if(g.answered) return;
       g.answered = true;
@@ -319,14 +403,30 @@
       if(isCorrect){
         g.correct += 1;
         btn.classList.add('correct');
+        qMeta.textContent = `第 ${state.level} 關｜第 ${g.index} / 10 題｜答對了，正確答案：${answerZh}`;
       }else{
         g.wrong += 1;
         btn.classList.add('wrong');
+        qMeta.textContent = `第 ${state.level} 關｜第 ${g.index} / 10 題｜答錯了，正確答案：${answerZh}`;
       }
       renderStats();
       saveState();
-    ame;
+    }
+
+    function finishLevel(){
+      const g = state.game;
       const perfect = g.correct === 10 && g.wrong === 0;
+      const rate = Math.round((g.correct / 10) * 100);
+      const now = new Date();
+      const timeText = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+
+      getRecordList().push({
+        level: state.level,
+        time: timeText,
+        rate,
+        pass: perfect
+      });
+
       if(perfect){
         getCompletedMap()[state.level] = true;
         qMeta.textContent = `第 ${state.level} 關過關成功`;
@@ -340,7 +440,6 @@
       choices.innerHTML = '';
       g.active = false;
       render();
-    }
 
     function renderStats(){
       const g = state.game;
